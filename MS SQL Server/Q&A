@@ -1,0 +1,134 @@
+Here are SQL queries for each task you've listed, using Microsoft SQL Server syntax:
+
+1) Find the 2nd highest salary from an employee table:
+  SELECT MAX(Salary) AS SecondHighestSalary  
+  FROM Employees  
+  WHERE Salary < (SELECT MAX(Salary) FROM Employees);  
+2) Find employees who have the same manager:
+  SELECT E1.*  
+  FROM Employees E1  
+  JOIN Employees E2 ON E1.ManagerID = E2.ManagerID  
+  WHERE E1.EmployeeID <> E2.EmployeeID;  
+
+3) Find the first and last record for each employee based on 'hire_date':
+
+  SELECT EmployeeID,   
+         MIN(hire_date) AS FirstHireDate,   
+         MAX(hire_date) AS LastHireDate  
+  FROM Employees  
+  GROUP BY EmployeeID;  
+
+4) Find the most recent transaction for each customer:
+  SELECT CustomerID, MAX(TransactionDate) AS MostRecentTransaction  
+  FROM Transactions  
+  GROUP BY CustomerID;  
+
+5) Total salary of each department with total salary > 50,000:
+
+  SELECT DepartmentID, SUM(Salary) AS TotalSalary  
+  FROM Employees  
+  GROUP BY DepartmentID  
+  HAVING SUM(Salary) > 50000;  
+
+6) Running total of orders for each customer sorted by order date:
+  SELECT CustomerID,  
+         OrderDate,  
+         SUM(OrderAmount) OVER (PARTITION BY CustomerID ORDER BY OrderDate) AS RunningTotal  
+  FROM Orders;  
+
+7) Total number of employees hired per month and year:
+  SELECT YEAR(hire_date) AS HireYear, MONTH(hire_date) AS HireMonth, COUNT(*) AS TotalHired  
+  FROM Employees  
+  GROUP BY YEAR(hire_date), MONTH(hire_date);  
+
+8) Employees who earn more than the average salary for their department:
+
+  SELECT E.*  
+  FROM Employees E  
+  WHERE Salary > (SELECT AVG(Salary)   
+                  FROM Employees   
+                  WHERE DepartmentID = E.DepartmentID);  
+
+9) Get the second-lowest salary without using LIMIT or OFFSET:
+  SELECT MIN(Salary) AS SecondLowestSalary  
+  FROM Employees  
+  WHERE Salary > (SELECT MIN(Salary) FROM Employees);  
+
+10) List all products that have never been ordered:
+  SELECT P.*  
+  FROM Products P  
+  LEFT JOIN Orders O ON P.ProductID = O.ProductID  
+  WHERE O.OrderID IS NULL;  
+
+11) Employees who joined in the same month and year:
+  SELECT E1.*  
+  FROM Employees E1  
+  JOIN Employees E2   
+      ON MONTH(E1.hire_date) = MONTH(E2.hire_date)   
+      AND YEAR(E1.hire_date) = YEAR(E2.hire_date)  
+  WHERE E1.EmployeeID <> E2.EmployeeID;  
+
+12) Get a list of employees older than the average age of employees in their department:
+  SELECT E.*  
+  FROM Employees E  
+  WHERE Age > (SELECT AVG(Age) FROM Employees WHERE DepartmentID = E.DepartmentID);  
+
+13) Display the employee(s) with the longest tenure:
+
+  SELECT EmployeeID, DATEDIFF(YEAR, hire_date, GETDATE()) AS Tenure  
+  FROM Employees  
+  WHERE DATEDIFF(YEAR, hire_date, GETDATE()) = (  
+      SELECT MAX(DATEDIFF(YEAR, hire_date, GETDATE())) FROM Employees);  
+
+14) Delete all records from a table where a specific column value is NULL:
+
+  DELETE FROM YourTable  
+  WHERE YourColumn IS NULL;  
+
+15) Find all pairs of products ordered together:
+
+  SELECT DISTINCT A.ProductID AS ProductA, B.ProductID AS ProductB  
+  FROM Orders O1  
+  JOIN OrderDetails A ON O1.OrderID = A.OrderID  
+  JOIN OrderDetails B ON O1.OrderID = B.OrderID AND A.ProductID <> B.ProductID;  
+
+16) Find the average order value by customer for each month:
+  SELECT CustomerID, MONTH(OrderDate) AS OrderMonth,   
+         AVG(OrderAmount) AS AverageOrderValue  
+  FROM Orders  
+  GROUP BY CustomerID, MONTH(OrderDate);  
+
+17) Identify customers who made a purchase every month for the past year:
+  
+  SELECT CustomerID  
+  FROM Orders  
+  WHERE OrderDate >= DATEADD(YEAR, -1, GETDATE())  
+  GROUP BY CustomerID, YEAR(OrderDate), MONTH(OrderDate)  
+  HAVING COUNT(DISTINCT MONTH(OrderDate)) = 12;  
+
+18)Find total revenue for each region in a given quarter:
+  SELECT Region, SUM(OrderAmount) AS TotalRevenue  
+  FROM Orders  
+  WHERE OrderDate BETWEEN 'YYYY-MM-DD' AND 'YYYY-MM-DD'  
+  GROUP BY Region;  
+
+19) Find the first purchase date of each customer:
+  SELECT CustomerID, MIN(OrderDate) AS FirstPurchaseDate  
+  FROM Orders  
+  GROUP BY CustomerID;  
+
+20) Calculate the year-on-year growth of revenue:
+  SELECT YEAR(OrderDate) AS OrderYear,   
+         SUM(OrderAmount) AS TotalRevenue,  
+         LAG(SUM(OrderAmount)) OVER (ORDER BY YEAR(OrderDate)) AS PreviousYearRevenue,  
+         (SUM(OrderAmount) - LAG(SUM(OrderAmount)) OVER (ORDER BY YEAR(OrderDate))) /   
+         LAG(SUM(OrderAmount)) OVER (ORDER BY YEAR(OrderDate)) * 100 AS YoYGrowthPercentage  
+  FROM Orders  
+  GROUP BY YEAR(OrderDate);  
+
+21) Find the Nth highest salary (e.g., 5th highest):
+
+SELECT DISTINCT Salary  
+FROM Employees  
+ORDER BY Salary DESC  
+OFFSET N-1 ROWS FETCH NEXT 1 ROWS ONLY;  -- Replace N with the desired rank  
