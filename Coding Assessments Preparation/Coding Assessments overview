@@ -1,0 +1,70 @@
+Failing coding assessments in the first-level interviews is a very common struggle—so first of all, don’t be too hard on yourself. With the right strategy, you can definitely improve and start cracking them consistently.
+
+Let’s break it down step by step.
+
+🔍 Why Coding Assessments Feel Hard
+
+Time Pressure – You have limited time to understand, plan, and code.
+Unfamiliar Patterns – Questions seem "new" even though they follow common patterns.
+Lack of Practice – If you’re not solving problems regularly, your thinking doesn’t become second nature.
+
+✅ How to Understand the Questions
+
+Here’s how you can train yourself to decode questions better:
+
+1. Slow Down & Read Twice
+  First read: Get the overall idea of the problem.
+  Second read: Look for inputs, expected outputs, and constraints (e.g., "array size is 10^5" — this hints at using O(n) solutions).
+
+2. Write an Example
+  Take sample input and output and try to do it manually. This helps clarify what the question is actually asking.
+
+3. Identify the Pattern
+  Most problems fall into certain patterns. Learn to classify the question:
+  Is it a string manipulation?
+  Is it a search problem? (Binary Search, DFS, BFS)
+  Is it dynamic programming?
+  Does it need a stack or queue?
+  Is it a greedy algorithm problem?
+
+🔁 How to Prepare for These Questions
+
+🔹 Step 1: Master the Basics
+
+  Practice these categories from easy to medium on platforms like LeetCode, HackerRank, or Codeforces:
+  Arrays & Strings
+  HashMaps & Sets
+  Two Pointers & Sliding Window
+  Stack & Queue
+  Recursion & Backtracking
+  Binary Search
+  Sorting
+  Trees & Graphs
+  Dynamic Programming (basic first)
+
+🔹 Step 2: Use Structured Resources
+
+  Here's a simple roadmap:
+  DSA Sheet by Love Babbar (very popular for interview prep)
+  NeetCode 150 on LeetCode (very organized)
+  Striver’s A2Z DSA Sheet (progressive learning)
+  
+🔹 Step 3: Practice Mock Assessments
+
+  Use Timed Practice on LeetCode.
+  Join contests like LeetCode Weekly/Monthly Contests.
+  Try HackerRank "Interview Preparation Kit".
+
+💡 Smart Tips
+  Don't start coding immediately. First plan your logic.
+  Write clean code – use proper variable names, indentation.
+  Edge cases – Think about empty arrays, nulls, very large inputs, etc.
+  Debugging – Get comfortable with printing and tracing logic during practice.
+
+🧠 Thinking Process to Develop
+  When you see a question, ask yourself:
+  What are the inputs/outputs?
+  Can I solve this manually for 2-3 test cases?
+  What’s the brute force approach?
+  Can I optimize it? (Better time/space)
+  Which data structure or algorithm fits?
