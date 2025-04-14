@@ -1,0 +1,48 @@
+1-month daily coding practice plan in list format, tailored for 1 hour/day, progressing from beginner to expert level for product-based companies:
+
+✅ Week 1: Core Basics
+Day 1 – Arrays: Basics, Prefix Sum
+Day 2 – Strings: Reversal, Palindromes, Anagrams
+Day 3 – Hashing: HashMap, HashSet
+Day 4 – Sorting: Bubble, Merge, Quick
+Day 5 – Two Pointers: Pair Sum, Remove Duplicates
+Day 6 – Sliding Window: Max Subarray, Longest Unique Substring
+Day 7 – Weekly Review: Mixed problem-solving (3 questions)
+
+✅ Week 2: Data Structures Practice
+Day 8 – Stack: Valid Parentheses, Min Stack
+Day 9 – Queue & Deque: BFS, Max in Sliding Window
+Day 10 – Linked List: Reverse, Detect Loop
+Day 11 – Binary Search: First/Last Occurrence, Rotated Array
+Day 12 – Recursion: Fibonacci, Subsets
+Day 13 – Backtracking: N-Queens, Subset Sum
+Day 14 – Review Day: Revisit tough problems
+
+✅ Week 3: Problem Solving & Algorithms
+Day 15 – Binary Tree: Traversals (Inorder, BFS)
+Day 16 – BST: Insert/Delete/Search, LCA
+Day 17 – Heap: Kth Largest, Median Finder
+Day 18 – Graphs (DFS): Islands, Path Exists
+Day 19 – Graphs (BFS): Rotten Oranges, Word Ladder
+Day 20 – Topological Sort: Kahn’s Algo, Course Schedule
+Day 21 – Mock Contest: Timed 3-question set
+
+✅ Week 4: Advanced + Interview Sim
+Day 22 – Greedy: Activity Selection, Gas Station
+Day 23 – Dynamic Programming I: Climb Stairs, House Robber
+Day 24 – Dynamic Programming II: Unique Paths, Knapsack
+Day 25 – Tries: Insert/Search Word, Prefix Search
+Day 26 – Bit Manipulation: XOR, Power of Two
+Day 27 – Mixed Practice: Medium-Hard Problems
+Day 28 – Final Mock Test: Timed 3-question set
+
+🏁 Wrap-Up Phase
+Day 29 – Mock Interview (Timed 1 hr, simulate real round)
+Day 30 – Analyze progress, revise weak topics, review notes
+
+🔧 Tools & Platforms:
+LeetCode (Main Platform) – Choose problems by topic.
+HackerRank – Try “Interview Preparation Kit.”
+GeeksforGeeks – For theory + implementation.
+Notes – Maintain your own problem-solving log (very useful).
+
