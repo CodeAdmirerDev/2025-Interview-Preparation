@@ -1,0 +1,126 @@
+Week 1: LINQ Basics, with detailed concepts, simple examples, and interview-focused questions.
+
+✅ Day 1–2: Introduction to LINQ
+
+🔹 What is LINQ?
+LINQ (Language Integrated Query) is a set of query capabilities built directly into C# and VB.NET. It allows querying collections (like arrays, lists, databases) in a readable, concise, and consistent manner.
+
+Instead of:
+foreach (var emp in employees)
+{
+    if (emp.Age > 30)
+        result.Add(emp);
+}
+
+You write:
+
+var result = employees.Where(e => e.Age > 30).ToList();
+
+🔹 Why use LINQ?
+
+Readable & maintainable
+Type-safe & IntelliSense support
+Consistent syntax for different data sources (SQL, XML, Objects)
+
+🔹 Types of LINQ
+
+Type	              Description
+LINQ to Objects    	Query in-memory collections (List, Array)
+LINQ to SQL	Query   SQL Server databases
+LINQ to Entities	  Query databases via Entity Framework
+LINQ to XML        	Query XML data
+
+🔹 Query Syntax vs Method Syntax
+Query Syntax:
+var result = from e in employees
+             where e.Age > 30
+             select e.Name;
+
+Method Syntax (Fluent):
+var result = employees
+             .Where(e => e.Age > 30)
+             .Select(e => e.Name);
+
+✅ Both do the same. Method syntax is more powerful and widely used.
+
+✅ Day 3–4: Basic Operations
+
+Assume:
+List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+
+🔹 Where
+Filters items based on condition.
+var even = numbers.Where(n => n % 2 == 0);
+
+🔹 Select
+Projects each item into a new form.
+var squares = numbers.Select(n => n * n);
+
+🔹 Take & Skip
+var firstThree = numbers.Take(3);      // 1, 2, 3
+var skipTwo = numbers.Skip(2);         // 3, 4, 5, 6
+
+🔹 First, FirstOrDefault
+var firstEven = numbers.First(n => n % 2 == 0);        // 2
+var firstOrDefault = numbers.FirstOrDefault(n => n > 10); // 0 (default of int)
+
+🔹 Single, SingleOrDefault
+Used when expecting exactly one result.
+var onlyOne = numbers.Single(n => n == 4);        // returns 4
+❌ Throws exception if more than one or none found
+
+✅ Day 5–6: Filtering and Projection
+Assume:
+class Employee
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+var employees = new List<Employee>
+{
+    new Employee { Id = 1, Name = "John", Age = 28 },
+    new Employee { Id = 2, Name = "Jane", Age = 35 },
+    new Employee { Id = 3, Name = "Smith", Age = 40 }
+};
+
+🔹 Filtering using Where
+var seniorEmployees = employees.Where(e => e.Age > 30);
+
+🔹 Projecting using Select
+var names = employees.Select(e => e.Name);
+
+🔹 Anonymous Types
+
+var nameAndAge = employees
+    .Where(e => e.Age > 30)
+    .Select(e => new { e.Name, e.Age });
+
+foreach (var item in nameAndAge)
+    Console.WriteLine($"{item.Name} - {item.Age}");
+
+✅ Day 7: Practice Problems
+🔸 Problem 1: Select all numbers greater than 10
+var result = numbers.Where(n => n > 10);
+
+🔸 Problem 2: Get names of employees older than 30
+var result = employees.Where(e => e.Age > 30)
+                      .Select(e => e.Name);
+🔸 Problem 3: Get first even number
+var result = numbers.First(n => n % 2 == 0);
+
+🔸 Problem 4: Skip first 2 elements and take next 3
+var result = numbers.Skip(2).Take(3);
+
+🔸 Problem 5: Get employee with Id = 2
+var result = employees.Single(e => e.Id == 2);
+
+💡 Common Interview Questions (Week 1 Level)
+    What is the difference between First and FirstOrDefault?
+    When would you use Single over First?
+    Explain query syntax vs method syntax. Which is better?
+    What is the benefit of anonymous types in LINQ?
+    How does Where work in LINQ and how is it different from SQL WHERE?
+    What’s deferred execution in LINQ? (preview for Week 4)
+    
