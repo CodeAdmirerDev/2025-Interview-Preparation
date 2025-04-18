@@ -1,0 +1,107 @@
+Week 2 LINQ Guide (Intermediate Level) with real-time examples and interview-focused insights:
+
+✅ Day 8-9: Sorting & Grouping
+
+🔸 OrderBy, OrderByDescending
+var names = new List<string> { "Ravi", "Anil", "Suri", "Monica" };
+
+// Ascending
+var sorted = names.OrderBy(n => n);
+
+// Descending
+var descSorted = names.OrderByDescending(n => n);
+
+🔸 ThenBy, ThenByDescending
+var students = new List<Student> {
+    new("Suri", "B"),
+    new("Monica", "A"),
+    new("Anil", "B"),
+};
+var result = students.OrderBy(s => s.Grade)
+                     .ThenBy(s => s.Name);
+
+🔸 GroupBy (⭐ Must for interviews)
+var employees = new List<Employee> {
+    new("Suri", "IT"),
+    new("Monica", "HR"),
+    new("Ravi", "IT"),
+    new("Anil", "Finance")
+};
+
+var grouped = employees.GroupBy(e => e.Department)
+    .Select(g => new {
+        Dept = g.Key,
+        Employees = g.ToList()
+    });
+
+🔥 Interview Tip: Grouping is frequently used in reporting dashboards, charts, salary grouping, etc.
+
+✅ Day 10-11: Aggregations
+
+🔸 Count, Sum, Average, Min, Max
+
+var salaries = new List<int> { 25000, 30000, 50000, 20000 };
+
+int count = salaries.Count();
+int total = salaries.Sum();
+double avg = salaries.Average();
+int min = salaries.Min();
+int max = salaries.Max();
+
+🔸 Aggregate
+
+string[] words = { "This", "is", "LINQ" };
+string sentence = words.Aggregate((current, next) => current + " " + next);
+
+🔥 Interview Tip: Use Aggregate() to build custom reducers like factorial, sentence formation, etc.
+
+✅ Day 12-13: Element Operators
+🔸 Any, All, Contains
+
+var nums = new List<int> { 1, 2, 3, 4 };
+bool anyEven = nums.Any(n => n % 2 == 0);     // True
+bool allEven = nums.All(n => n % 2 == 0);     // False
+bool hasThree = nums.Contains(3);             // True
+
+🔸 Distinct
+var dupNames = new List<string> { "Suri", "Monica", "Suri", "Ravi" };
+var uniqueNames = dupNames.Distinct();
+
+🔥 Interview Tip: Combine Distinct() with Select() for projection + uniqueness.
+
+✅ Day 14: Practice Day
+
+🔸 Real-time scenario – Group Employees by Department
+
+var departmentGroups = employees
+    .GroupBy(e => e.Department)
+    .Select(g => new {
+        Department = g.Key,
+        Count = g.Count(),
+        Names = g.Select(e => e.Name).ToList()
+    });
+
+🔸 Find Average Salary per Department
+var avgSalaryPerDept = employees
+    .GroupBy(e => e.Department)
+    .Select(g => new {
+        Department = g.Key,
+        AvgSalary = g.Average(e => e.Salary)
+    });
+
+🔸 Find Employees with Duplicate Names
+var duplicates = employees
+    .GroupBy(e => e.Name)
+    .Where(g => g.Count() > 1)
+    .Select(g => g.Key);
+
+
+🎯 Top Interview Questions (Week 2)
+Difference between OrderBy vs ThenBy?
+How does GroupBy differ from SQL GROUP BY?
+How can you get average salary per department using LINQ?
+Explain how Aggregate() works. Use a real-time example.
+When to use Any() vs All() vs Contains()?
+How do you remove duplicates from a complex object list using Distinct()?
+Can you use GroupBy and Select to count items in each group?
+
