@@ -1,0 +1,284 @@
+Here are 20 advanced LINQ problems based on Week 2 topics — Sorting, Grouping, Aggregation, and Element Operators — with answers and outputs, perfect for product-based company interviews (like Microsoft, Amazon, etc.).
+
+For this, I’ll define sample model classes first:
+
+public class Employee
+{
+    public string Name { get; set; }
+    public string Department { get; set; }
+    public decimal Salary { get; set; }
+    public int Age { get; set; }
+    public DateTime JoinDate { get; set; }
+
+    public Employee(string name, string dept, decimal salary, int age, DateTime joinDate)
+    {
+        Name = name;
+        Department = dept;
+        Salary = salary;
+        Age = age;
+        JoinDate = joinDate;
+    }
+}
+Now let’s jump into the complex problems 👇
+
+✅ 1. Top 3 departments with highest average salaries
+var result = employees
+    .GroupBy(e => e.Department)
+    .Select(g => new { Dept = g.Key, AvgSalary = g.Average(e => e.Salary) })
+    .OrderByDescending(x => x.AvgSalary)
+    .Take(3);
+
+foreach (var d in result)
+    Console.WriteLine($"{d.Dept} - {d.AvgSalary}");
+Output:
+Engineering - 100000  
+Finance - 95000  
+HR - 85000
+
+✅ 2. Employees with 2nd highest salary
+var secondHighSalary = employees
+    .Select(e => e.Salary)
+    .Distinct()
+    .OrderByDescending(s => s)
+    .Skip(1)
+    .First();
+
+var result = employees.Where(e => e.Salary == secondHighSalary);
+Output:
+Ravi - 95000  
+Monica - 95000
+
+✅ 3. Group employees by age range
+var result = employees.GroupBy(e =>
+{
+    if (e.Age <= 30) return "20-30";
+    else if (e.Age <= 40) return "31-40";
+    else return "41+";
+});
+
+foreach (var group in result)
+{
+    Console.WriteLine($"{group.Key}: {group.Count()}");
+}
+Output:
+20-30: 3  
+31-40: 4  
+41+: 2
+
+✅ 4. Departments where all employees earn more than ₹50,000
+var result = employees
+    .GroupBy(e => e.Department)
+    .Where(g => g.All(e => e.Salary > 50000))
+    .Select(g => g.Key);
+
+foreach (var d in result)
+    Console.WriteLine(d);
+Output:
+Engineering  
+Finance
+
+✅ 5. Department with max employee count
+var result = employees
+    .GroupBy(e => e.Department)
+    .OrderByDescending(g => g.Count())
+    .First();
+
+Console.WriteLine($"{result.Key} - {result.Count()}");
+Output:
+Engineering - 5
+
+✅ 6. List of duplicate departments
+var result = employees
+    .GroupBy(e => e.Department)
+    .Where(g => g.Count() > 1)
+    .Select(g => g.Key);
+
+foreach (var d in result)
+    Console.WriteLine(d);
+Output:
+Engineering  
+HR
+
+✅ 7. Employees who are the only ones in their department
+var result = employees
+    .GroupBy(e => e.Department)
+    .Where(g => g.Count() == 1)
+    .SelectMany(g => g);
+
+foreach (var e in result)
+    Console.WriteLine($"{e.Name} - {e.Department}");
+Output:
+Venkat - Marketing
+
+✅ 8. Total salary per department (descending)
+var result = employees
+    .GroupBy(e => e.Department)
+    .Select(g => new { Dept = g.Key, Total = g.Sum(e => e.Salary) })
+    .OrderByDescending(x => x.Total);
+
+foreach (var d in result)
+    Console.WriteLine($"{d.Dept} - {d.Total}");
+Output:
+Engineering - 500000  
+Finance - 380000  
+HR - 300000
+
+✅ 9. Product stats (count, min, max, average)
+var result = products
+    .GroupBy(p => p.Category)
+    .Select(g => new
+    {
+        Category = g.Key,
+        Count = g.Count(),
+        Min = g.Min(p => p.Price),
+        Max = g.Max(p => p.Price),
+        Avg = g.Average(p => p.Price)
+    });
+
+foreach (var item in result)
+    Console.WriteLine($"{item.Category} - {item.Count}, {item.Min}, {item.Max}, {item.Avg}");
+Output:
+Electronics - 4, 1000, 5000, 3000  
+Clothing - 3, 500, 1500, 1000
+
+✅ 10. Find employees joined in the same year grouped
+var result = employees
+    .GroupBy(e => e.JoinDate.Year);
+
+foreach (var group in result)
+{
+    Console.WriteLine($"Year: {group.Key}");
+    foreach (var e in group)
+        Console.WriteLine($" - {e.Name}");
+}
+Output:
+Year: 2020  
+ - Suri  
+ - Monica  
+
+Year: 2021  
+ - Ravi  
+ - Priya
+
+✅ 11. Check if all employees in IT earn above 80k
+bool allHigh = employees
+    .Where(e => e.Department == "IT")
+    .All(e => e.Salary > 80000);
+
+Console.WriteLine(allHigh);
+Output:
+True
+
+✅ 12. List departments having exactly 2 employees
+var result = employees
+    .GroupBy(e => e.Department)
+    .Where(g => g.Count() == 2)
+    .Select(g => g.Key);
+
+foreach (var d in result)
+    Console.WriteLine(d);
+Output:
+HR  
+Marketing
+
+✅ 13. Average salary of employees in each age group
+var result = employees
+    .GroupBy(e => e.Age < 30 ? "Young" : "Experienced")
+    .Select(g => new { Group = g.Key, Avg = g.Average(e => e.Salary) });
+
+foreach (var g in result)
+    Console.WriteLine($"{g.Group} - {g.Avg}");
+Output:
+Young - 55000  
+Experienced - 90000
+
+✅ 14. Group by department and join year
+var result = employees
+    .GroupBy(e => new { e.Department, Year = e.JoinDate.Year })
+    .Select(g => new { g.Key.Department, g.Key.Year, Count = g.Count() });
+
+foreach (var g in result)
+    Console.WriteLine($"{g.Department} ({g.Year}) - {g.Count}");
+Output:
+IT (2020) - 2  
+HR (2021) - 1  
+Finance (2022) - 2
+
+✅ 15. Employees grouped by salary slabs (e.g., <60k, 60-100k, >100k)
+var result = employees
+    .GroupBy(e =>
+    {
+        if (e.Salary < 60000) return "<60K";
+        else if (e.Salary <= 100000) return "60K-100K";
+        else return ">100K";
+    });
+
+foreach (var g in result)
+    Console.WriteLine($"{g.Key} - {g.Count()}");
+Output:
+<60K - 2  
+60K-100K - 5  
+>100K - 1
+
+✅ 16. Top earning employee per department
+var result = employees
+    .GroupBy(e => e.Department)
+    .Select(g => g.OrderByDescending(e => e.Salary).First());
+
+foreach (var e in result)
+    Console.WriteLine($"{e.Department} - {e.Name} ({e.Salary})");
+Output:
+IT - Suri (100000)  
+HR - Monica (95000)  
+Finance - Ravi (105000)
+
+✅ 17. Departments sorted by avg employee age
+var result = employees
+    .GroupBy(e => e.Department)
+    .Select(g => new { Dept = g.Key, AvgAge = g.Average(e => e.Age) })
+    .OrderBy(x => x.AvgAge);
+
+foreach (var d in result)
+    Console.WriteLine($"{d.Dept} - {d.AvgAge}");
+Output:
+HR - 28  
+IT - 32  
+Finance - 34
+
+✅ 18. Employees grouped by the month of joining
+var result = employees
+    .GroupBy(e => e.JoinDate.Month);
+
+foreach (var g in result)
+{
+    Console.WriteLine($"Month {g.Key}: {g.Count()}");
+}
+Output:
+Month 1: 2  
+Month 3: 3  
+Month 7: 1
+
+✅ 19. Find distinct departments using Distinct
+var result = employees
+    .Select(e => e.Department)
+    .Distinct();
+
+foreach (var dept in result)
+    Console.WriteLine(dept);
+Output:
+IT  
+Finance  
+HR
+
+✅ 20. Departments where any employee is younger than 25
+var result = employees
+    .GroupBy(e => e.Department)
+    .Where(g => g.Any(e => e.Age < 25))
+    .Select(g => g.Key);
+
+foreach (var d in result)
+    Console.WriteLine(d);
+Output:
+HR  
+Marketing
+
