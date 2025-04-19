@@ -1,0 +1,195 @@
+✅ Week 4 – Expert-Level LINQ Coding Interview Questions with Answers & Outputs
+🔄 EF Core Translation & Performance
+
+1. Q: Simulate an expensive query and optimize it using AsNoTracking()
+var result = context.Employees
+    .AsNoTracking() // improves read-only performance
+    .Where(e => e.Salary > 70000 && e.Location == "Hyderabad")
+    .ToList();
+Output:
+David (75000) - Hyderabad
+
+2. Q: Implement paging for employees sorted by salary
+int page = 1, pageSize = 2;
+var result = context.Employees
+    .OrderByDescending(e => e.Salary)
+    .Skip((page - 1) * pageSize)
+    .Take(pageSize)
+    .ToList();
+Output:
+David (75000), Alice (70000)
+
+3. Q: Conditionally include navigation property only if needed
+bool includeDept = true;
+var query = context.Employees.AsQueryable();
+
+if (includeDept)
+    query = query.Include(e => e.Department);
+
+var result = query.ToList();
+Output:
+Includes department info only when includeDept = true.
+
+4. Q: Departments with more than 2 employees and at least one high-earner
+
+var result = context.Departments
+    .Where(d => d.Employees.Count() > 2 && d.Employees.Any(e => e.Salary > 80000))
+    .ToList();
+Output:
+Finance
+
+5. Q: Difference between First() and FirstOrDefault()
+var emp = context.Employees.FirstOrDefault(e => e.Name == "Zack");
+if (emp == null)
+    Console.WriteLine("Employee not found");
+Output:
+Employee not found
+
+6. Q: Use Include & ThenInclude to avoid N+1 for nested data
+var result = context.Departments
+    .Include(d => d.Employees)
+    .ThenInclude(e => e.Projects)
+    .ToList();
+Output:
+Eager loads department → employees → projects (1 SQL query).
+
+🧠 Complex Grouping, Filtering, Projection
+
+7. Q: Group employees by department and show top 2 earners per group
+var result = context.Employees
+    .GroupBy(e => e.DeptId)
+    .Select(g => new {
+        DeptId = g.Key,
+        TopEarners = g.OrderByDescending(e => e.Salary).Take(2)
+    }).ToList();
+Output:
+
+Dept: HR → Alice (70000), Bob (65000)
+
+8. Q: Show department name with count of employees having salary > 50K
+var result = context.Departments.Select(d => new {
+    d.Name,
+    HighSalaryCount = d.Employees.Count(e => e.Salary > 50000)
+});
+Output:
+HR - 2  
+IT - 1  
+Finance - 0
+
+9. Q: Flatten nested project titles of employees
+var result = context.Employees
+    .SelectMany(e => e.Projects, (e, p) => new { e.Name, p.Title })
+    .ToList();
+Output:
+Alice - Project Alpha  
+Alice - Project Beta  
+Bob - Project X
+
+10. Q: Filter and group by location with total salary
+var result = context.Employees
+    .GroupBy(e => e.Location)
+    .Select(g => new {
+        Location = g.Key,
+        TotalSalary = g.Sum(e => e.Salary)
+    }).ToList();
+Output:
+Hyderabad - 190000  
+Bangalore - 120000
+
+11. Q: Create Dictionary<DeptName, List<Employee>>
+var dict = context.Employees
+    .Join(context.Departments,
+          e => e.DeptId, d => d.Id,
+          (e, d) => new { e, d.Name })
+    .GroupBy(x => x.Name)
+    .ToDictionary(g => g.Key, g => g.Select(x => x.e).ToList());
+Output:
+HR => Alice, Bob  
+IT => Charlie
+
+12. Q: Top 3 salaries with projections
+var result = context.Employees
+    .OrderByDescending(e => e.Salary)
+    .Take(3)
+    .Select(e => new { e.Name, e.Salary })
+    .ToList();
+Output:
+David - 75000  
+Alice - 70000  
+Bob - 65000
+
+13. Q: Employees from departments with only one employee
+var result = context.Employees
+    .GroupBy(e => e.DeptId)
+    .Where(g => g.Count() == 1)
+    .SelectMany(g => g)
+    .ToList();
+Output:
+Eve (Finance)
+
+14. Q: Group employees by salary range using switch
+var result = context.Employees
+    .GroupBy(e => e.Salary switch {
+        <= 40000 => "Low",
+        > 40000 and <= 60000 => "Mid",
+        > 60000 => "High",
+        _ => "Unknown"
+    }).ToList();
+Output:
+Low - 1  
+Mid - 2  
+High - 2
+
+15. Q: Filter employees whose name starts with 'A' and from IT
+var result = context.Employees
+    .Where(e => e.Name.StartsWith("A"))
+    .Join(context.Departments.Where(d => d.Name == "IT"),
+          e => e.DeptId, d => d.Id, (e, d) => e)
+    .ToList();
+Output:
+Anusha (IT)
+
+16. Q: Final report – Employee, Dept, Location, Salary
+var result = context.Employees
+    .Join(context.Departments, e => e.DeptId, d => d.Id,
+          (e, d) => new { e.Name, d.Name, e.Location, e.Salary });
+Output:
+Alice - HR - Hyderabad - 70000  
+Bob - HR - Hyderabad - 65000  
+David - IT - Bangalore - 75000
+
+17. Q: Conditional projection using ternary in Select
+var result = context.Employees.Select(e => new {
+    e.Name,
+    SalaryRange = e.Salary > 60000 ? "High" : "Normal"
+}).ToList();
+Output:
+Alice - High  
+Bob - High  
+Charlie - Normal
+
+18. Q: GroupJoin with filtering on inner group
+var result = context.Departments
+    .GroupJoin(context.Employees,
+               d => d.Id, e => e.DeptId,
+               (d, emps) => new { d.Name, HighEarners = emps.Where(e => e.Salary > 60000) })
+    .ToList();
+
+19. Q: Get departments with no employees
+var result = context.Departments
+    .GroupJoin(context.Employees, d => d.Id, e => e.DeptId,
+               (d, emps) => new { d.Name, Count = emps.Count() })
+    .Where(x => x.Count == 0)
+    .ToList();
+Output:
+Finance
+
+20. Q: Deferred query chaining
+var query = context.Employees.Where(e => e.Location == "Bangalore");
+
+if (needHighSalary)
+    query = query.Where(e => e.Salary > 60000);
+
+var result = query.ToList();
+Output:
+Only evaluated when ToList() is called.
