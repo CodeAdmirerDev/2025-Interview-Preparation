@@ -1,0 +1,200 @@
+Top 20 Logical Coding Interview Questions with Answers and Expected Output based on Week 3 LINQ topics: 
+Joins, Nested Queries, Dictionaries, HashSet, and Real-Time Use Cases.
+
+🔹 Setup for Examples:
+
+public class Employee {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int DeptId { get; set; }
+    public double Salary { get; set; }
+}
+
+public class Department {
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+List<Employee> employees = new() {
+    new Employee { Id = 1, Name = "Alice", DeptId = 1, Salary = 50000 },
+    new Employee { Id = 2, Name = "Bob", DeptId = 1, Salary = 60000 },
+    new Employee { Id = 3, Name = "Charlie", DeptId = 2, Salary = 55000 },
+    new Employee { Id = 4, Name = "David", DeptId = 0, Salary = 40000 }
+};
+
+List<Department> departments = new() {
+    new Department { Id = 1, Name = "HR" },
+    new Department { Id = 2, Name = "IT" },
+    new Department { Id = 3, Name = "Finance" }
+};
+
+✅ 1. Inner Join
+var result = from e in employees
+             join d in departments on e.DeptId equals d.Id
+             select new { e.Name, DeptName = d.Name };
+Output:
+Alice - HR
+Bob - HR
+Charlie - IT
+
+✅ 2. Left Join
+var result = from e in employees
+             join d in departments on e.DeptId equals d.Id into ed
+             from d in ed.DefaultIfEmpty()
+             select new { e.Name, DeptName = d?.Name ?? "Not Assigned" };
+Output:
+Alice - HR
+Bob - HR
+Charlie - IT
+David - Not Assigned
+
+✅ 3. GroupJoin - Department with Employees
+var result = departments
+             .GroupJoin(employees, d => d.Id, e => e.DeptId,
+                (d, empGroup) => new {
+                    d.Name,
+                    Employees = empGroup.Select(e => e.Name).ToList()
+                });
+Output:
+HR - Alice, Bob
+IT - Charlie
+Finance - (empty)
+
+✅ 4. SelectMany - Flattening
+var result = departments
+             .SelectMany(d => employees.Where(e => e.DeptId == d.Id),
+                         (d, e) => new { d.Name, EmployeeName = e.Name });
+Output:
+HR - Alice
+HR - Bob
+IT - Charlie
+
+✅ 5. Nested LINQ: Employees in IT Department
+var result = employees
+             .Where(e => departments
+                         .Where(d => d.Name == "IT")
+                         .Select(d => d.Id)
+                         .Contains(e.DeptId));
+Output:
+Charlie
+
+✅ 6. Employees with Salary > 50000
+var result = employees.Where(e => e.Salary > 50000);
+Output:
+Bob - 60000
+Charlie - 55000
+
+✅ 7. Departments with No Employees
+var result = departments
+             .Where(d => !employees.Any(e => e.DeptId == d.Id));
+Output:
+Finance
+
+✅ 8. Top 1 Salary per Department
+var result = departments.Select(d => new {
+    d.Name,
+    TopEmployee = employees
+                  .Where(e => e.DeptId == d.Id)
+                  .OrderByDescending(e => e.Salary)
+                  .FirstOrDefault()
+});
+Output:
+HR - Bob
+IT - Charlie
+Finance - null
+
+✅ 9. Employees Grouped by Salary Range
+var result = employees.GroupBy(e =>
+        e.Salary > 55000 ? "High" :
+        e.Salary > 45000 ? "Medium" : "Low");
+Output:
+High - Bob
+Medium - Alice, Charlie
+Low - David
+
+✅ 10. Convert to Dictionary (Id -> Name)
+var dict = employees.ToDictionary(e => e.Id, e => e.Name);
+Output:
+1 -> Alice
+2 -> Bob
+3 -> Charlie
+4 -> David
+
+✅ 11. ToLookup by Department
+var lookup = employees.ToLookup(e => e.DeptId);
+Output:
+Dept 1 -> Alice, Bob
+Dept 2 -> Charlie
+Dept 0 -> David
+
+✅ 12. Filter Dictionary Values > 50000
+var dict = employees.ToDictionary(e => e.Name, e => e.Salary);
+var result = dict.Where(x => x.Value > 50000);
+Output:
+Bob - 60000
+Charlie - 55000
+
+✅ 13. Check for Duplicates using HashSet
+string[] emails = { "a@gmail.com", "b@gmail.com", "a@gmail.com" };
+HashSet<string> set = new();
+bool hasDuplicate = emails.Any(e => !set.Add(e));
+Output:
+true
+
+✅ 14. List of Departments with >= 2 Employees
+var result = employees
+             .GroupBy(e => e.DeptId)
+             .Where(g => g.Count() >= 2)
+             .Select(g => g.Key);
+Output:
+1 (HR)
+
+✅ 15. Project Department with Nested Employees
+var result = departments.Select(d => new {
+    d.Name,
+    Employees = employees
+                .Where(e => e.DeptId == d.Id)
+                .Select(e => new { e.Name, e.Salary })
+});
+Output:
+HR - Alice(50000), Bob(60000)
+IT - Charlie(55000)
+Finance - (empty)
+
+✅ 16. Common Employees in Two Lists
+var list1 = new[] { "Alice", "Bob", "David" };
+var list2 = new[] { "Charlie", "Bob", "Alice" };
+
+var common = list1.Intersect(list2);
+Output:
+Alice, Bob
+
+✅ 17. Group Employees by Department Name
+var result = from e in employees
+             join d in departments on e.DeptId equals d.Id
+             group e by d.Name into g
+             select new { Dept = g.Key, Names = g.Select(x => x.Name) };
+Output:
+HR - Alice, Bob
+IT - Charlie
+
+✅ 18. Employees Not in Any Department
+var result = employees
+             .Where(e => !departments.Any(d => d.Id == e.DeptId));
+Output:
+David
+
+✅ 19. Count of Employees by Department
+var result = employees
+             .GroupBy(e => e.DeptId)
+             .Select(g => new { DeptId = g.Key, Count = g.Count() });
+Output:
+1 - 2
+2 - 1
+0 - 1
+
+✅ 20. Get All Employee Names in a Single Comma String
+var result = string.Join(", ", employees.Select(e => e.Name));
+Output:
+Alice, Bob, Charlie, David
+
