@@ -1,0 +1,223 @@
+✅ Advanced LINQ Coding Interview Questions – Set 2 (Expert Level)
+
+🔹 Sample Setup 
+public class Employee {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int DeptId { get; set; }
+    public double Salary { get; set; }
+}
+
+public class Department {
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+List<Employee> employees = new() {
+    new Employee { Id = 1, Name = "Alice", DeptId = 1, Salary = 50000 },
+    new Employee { Id = 2, Name = "Bob", DeptId = 1, Salary = 60000 },
+    new Employee { Id = 3, Name = "Charlie", DeptId = 2, Salary = 55000 },
+    new Employee { Id = 4, Name = "David", DeptId = 0, Salary = 40000 }
+};
+
+List<Department> departments = new() {
+    new Department { Id = 1, Name = "HR" },
+    new Department { Id = 2, Name = "IT" },
+    new Department { Id = 3, Name = "Finance" }
+};
+
+
+
+✅ 1. Join and Filter: Employees in IT or Finance with Salary > 50000
+var result = from e in employees
+             join d in departments on e.DeptId equals d.Id
+             where (d.Name == "IT" || d.Name == "Finance") && e.Salary > 50000
+             select new { e.Name, d.Name, e.Salary };
+Output:
+Charlie - IT - 55000
+
+✅ 2. GroupJoin with Aggregate: Average Salary per Department
+var result = departments
+    .GroupJoin(employees, d => d.Id, e => e.DeptId,
+        (d, es) => new { d.Name, AvgSalary = es.Any() ? es.Average(x => x.Salary) : 0 });
+Output:
+HR - 55000
+IT - 55000
+Finance - 0
+
+✅ 3. Join 3 Collections (Employees, Departments, Projects)
+public class Project { public int EmpId; public string ProjectName; }
+List<Project> projects = new() {
+    new Project{ EmpId = 1, ProjectName = "AI" },
+    new Project{ EmpId = 2, ProjectName = "Cloud" }
+};
+
+var result = from e in employees
+             join d in departments on e.DeptId equals d.Id
+             join p in projects on e.Id equals p.EmpId
+             select new { e.Name, d.Name, p.ProjectName };
+Output:
+Alice - HR - AI
+Bob - HR - Cloud
+
+✅ 4. Find Employees Who Are the Only One in Their Department
+var result = employees
+             .GroupBy(e => e.DeptId)
+             .Where(g => g.Count() == 1)
+             .SelectMany(g => g);
+Output:
+Charlie
+
+✅ 5. Find Duplicate Employee Names Using GroupBy
+employees.Add(new Employee { Id = 5, Name = "Alice", DeptId = 2, Salary = 70000 });
+
+var result = employees
+             .GroupBy(e => e.Name)
+             .Where(g => g.Count() > 1)
+             .Select(g => g.Key);
+Output:
+Alice
+
+✅ 6. Find Top N Highest Salaries Across All Departments
+var result = employees
+             .OrderByDescending(e => e.Salary)
+             .Take(3);
+Output:
+Alice (70000)
+Bob (60000)
+Charlie (55000)
+
+✅ 7. Create Dictionary of Departments with Average Salary
+var result = departments
+             .ToDictionary(
+                 d => d.Name,
+                 d => employees.Where(e => e.DeptId == d.Id).DefaultIfEmpty()
+                               .Average(e => e?.Salary ?? 0));
+Output:
+HR - 55000
+IT - 55000
+Finance - 0
+
+✅ 8. Flatten Dictionary of Employee -> Project[]
+Dictionary<string, string[]> empProjects = new() {
+    { "Alice", new[] { "AI", "ML" } },
+    { "Bob", new[] { "Azure" } }
+};
+
+var result = empProjects.SelectMany(ep =>
+            ep.Value.Select(p => new { emp = ep.Key, project = p }));
+Output:
+Alice - AI
+Alice - ML
+Bob - Azure
+
+✅ 9. Find Employees Working on At Least 2 Projects
+var result = empProjects.Where(ep => ep.Value.Length >= 2)
+                        .Select(ep => ep.Key);
+Output:
+Alice
+
+✅ 10. Group Employees by Initial Letter of Name
+var result = employees.GroupBy(e => e.Name[0]);
+Output:
+A - Alice, Alice
+B - Bob
+C - Charlie
+D - David
+
+✅ 11. Create Dictionary with DeptId -> List of Salaries
+var result = employees
+             .GroupBy(e => e.DeptId)
+             .ToDictionary(g => g.Key, g => g.Select(x => x.Salary).ToList());
+Output:
+1 -> [50000, 60000]
+2 -> [55000, 70000]
+0 -> [40000]
+
+✅ 12. Employee with Lowest Salary in Each Department
+var result = departments.Select(d => new {
+    d.Name,
+    LowestPaid = employees
+                 .Where(e => e.DeptId == d.Id)
+                 .OrderBy(e => e.Salary)
+                 .FirstOrDefault()
+});
+Output:
+HR - Alice
+IT - Charlie
+Finance - null
+
+✅ 13. HashSet: Remove Duplicate Emails
+string[] emails = { "x@gmail.com", "y@gmail.com", "x@gmail.com" };
+var uniqueEmails = new HashSet<string>(emails);
+Output:
+x@gmail.com, y@gmail.com
+
+✅ 14. Count of Employees per Salary Range (using Lookup)
+var lookup = employees.ToLookup(
+    e => e.Salary >= 60000 ? "High" :
+         e.Salary >= 50000 ? "Medium" : "Low");
+
+foreach (var g in lookup)
+    Console.WriteLine($"{g.Key} -> {g.Count()}");
+Output:
+Medium -> 2
+High -> 2
+Low -> 1
+
+✅ 15. Flatten Department and Employees to CSV Strings
+var result = departments.Select(d => new {
+    d.Name,
+    Employees = string.Join(", ", employees.Where(e => e.DeptId == d.Id).Select(e => e.Name))
+});
+Output:
+HR - Alice, Bob
+IT - Charlie, Alice
+Finance -
+
+✅ 16. Dictionary: Highest Paid Employee Per Department
+var result = departments.ToDictionary(
+    d => d.Name,
+    d => employees.Where(e => e.DeptId == d.Id)
+                  .OrderByDescending(e => e.Salary)
+                  .FirstOrDefault()?.Name ?? "No Employee");
+Output:
+HR - Bob
+IT - Alice
+Finance - No Employee
+
+✅ 17. Find Departments with All Employees > 50000
+var result = departments.Where(d =>
+    employees.Where(e => e.DeptId == d.Id).All(e => e.Salary > 50000));
+Output:
+IT
+
+✅ 18. Select Employees with Unique Department (only 1 employee in that dept)
+var result = employees.GroupBy(e => e.DeptId)
+                      .Where(g => g.Count() == 1)
+                      .SelectMany(g => g);
+Output:
+Charlie
+
+✅ 19. Create Lookup from Employee Name Initial to Employee
+var lookup = employees.ToLookup(e => e.Name[0]);
+Output (sample use):
+lookup['A'] -> Alice, Alice
+
+✅ 20. Custom Join With Multiple Keys (Name + DeptId)
+var empList1 = new List<Employee> {
+    new Employee { Name = "Alice", DeptId = 1 },
+    new Employee { Name = "Bob", DeptId = 2 }
+};
+
+var empList2 = new List<Employee> {
+    new Employee { Name = "Alice", DeptId = 1 },
+    new Employee { Name = "Alice", DeptId = 2 }
+};
+
+var result = from e1 in empList1
+             join e2 in empList2
+             on new { e1.Name, e1.DeptId } equals new { e2.Name, e2.DeptId }
+             select e1;
+Output:
+Alice - 1
