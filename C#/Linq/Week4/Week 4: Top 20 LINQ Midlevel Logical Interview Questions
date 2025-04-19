@@ -1,0 +1,154 @@
+✅ Week 4: Top 20 LINQ Logical Interview Questions with Answers & Outputs
+🔁 Day 22–23: LINQ with EF Core
+1. Q: How are LINQ queries translated into SQL in EF Core?
+A: EF Core uses expression trees to translate LINQ queries into SQL. It analyzes the query and generates optimized SQL during execution.
+
+var highEarners = context.Employees
+                         .Where(e => e.Salary > 60000)
+                         .Select(e => new { e.Name, e.Salary });
+SQL Output:
+
+SELECT [e].[Name], [e].[Salary]
+FROM [Employees] AS [e]
+WHERE [e].[Salary] > 60000
+
+2. Q: What's the difference between AsEnumerable() and AsQueryable()?
+AsEnumerable() executes the query and switches to in-memory LINQ-to-Objects.
+
+AsQueryable() allows deferred execution and keeps the query in LINQ-to-Entities.
+
+var query = context.Employees.AsEnumerable().Where(e => CustomFilter(e));
+Output:
+The filtering happens in memory after data is loaded.
+
+3. Q: When should you use ToList() and when should you avoid it?
+A: Use ToList() only after filtering and projecting the data. Calling it too early fetches all data from DB unnecessarily.
+
+// BAD
+var data = context.Employees.ToList().Where(e => e.Salary > 60000);
+
+// GOOD
+var data = context.Employees.Where(e => e.Salary > 60000).ToList();
+4. Q: Fetch only employee names and locations using EF Core.
+var result = context.Employees.Select(e => new { e.Name, e.Location }).ToList();
+Output:
+Alice - Hyderabad  
+Bob - Bangalore  
+
+5. Q: Show how deferred execution works using a LINQ query.
+var query = context.Employees.Where(e => e.Salary > 50000);
+foreach (var emp in query) { Console.WriteLine(emp.Name); }
+Output:
+Deferred: SQL is executed when iteration starts, not at query definition.
+
+🔄 Day 24–25: Complex Transformations
+6. Q: Group employees by department where count > 1.
+var result = context.Employees
+    .GroupBy(e => e.DeptId)
+    .Where(g => g.Count() > 1)
+    .ToList();
+Output:
+Only departments with more than one employee are shown.
+
+7. Q: Write a LINQ query with multiple joins (Employee + Dept + Project).
+
+var result = from e in context.Employees
+             join d in context.Departments on e.DeptId equals d.Id
+             join p in context.Projects on e.Id equals p.EmployeeId
+             select new { e.Name, d.Name, p.Title };
+Output:
+
+Alice - HR - Project X  
+Bob - IT - Project Y  
+
+8. Q: Use ternary in Select to label high or low salary.
+var result = context.Employees.Select(e => new
+{
+    e.Name,
+    Status = e.Salary > 60000 ? "High" : "Low"
+});
+Output:
+Alice - High  
+Bob - Low  
+
+9. Q: Group employees by salary ranges using switch expression.
+var result = context.Employees.GroupBy(e => e.Salary switch
+{
+    <= 40000 => "Low",
+    > 40000 and <= 60000 => "Medium",
+    _ => "High"
+});
+Output:
+Low - 2  
+Medium - 3  
+High - 1  
+
+10. Q: Create Dictionary<DeptName, List<Employee>>.
+var dict = context.Employees
+    .Join(context.Departments, e => e.DeptId, d => d.Id, (e, d) => new { e, d.Name })
+    .GroupBy(x => x.Name)
+    .ToDictionary(g => g.Key, g => g.Select(x => x.e).ToList());
+Output:
+HR:
+  Alice  
+  Bob  
+IT:
+  Charlie  
+🚫 Day 26–27: Avoiding Pitfalls
+
+11. Q: Show a performance issue caused by ToList() in loops.
+foreach (var dept in context.Departments.ToList())
+{
+    var emps = context.Employees.Where(e => e.DeptId == dept.Id).ToList(); // Bad: repeated queries
+}
+Solution: Use GroupJoin instead to batch-fetch.
+
+12. Q: Deferred execution with chained filters.
+var baseQuery = context.Employees.Where(e => e.Location == \"Hyderabad\");
+var highEarners = baseQuery.Where(e => e.Salary > 60000);
+Output:
+Single optimized SQL runs when highEarners is iterated.
+
+13. Q: Optimize a query that filters by name and then selects.
+var result = context.Employees
+    .Where(e => e.Name.StartsWith(\"A\"))
+    .Select(e => new { e.Name, e.Location })
+    .ToList();
+
+14. Q: Show filtered group join (only departments with employees).
+var result = context.Departments
+    .GroupJoin(context.Employees,
+               d => d.Id, e => e.DeptId,
+               (d, empList) => new { d.Name, Employees = empList })
+    .Where(x => x.Employees.Any());
+
+15. Q: Avoid N+1 query using eager loading in EF Core.
+
+var result = context.Departments.Include(d => d.Employees).ToList();
+🧪 Day 28: Capstone Real-Time Use Cases
+
+16. Q: Final Report: Employee, Department, Location, Salary
+
+var result = context.Employees
+    .Join(context.Departments, e => e.DeptId, d => d.Id,
+          (e, d) => new { e.Name, e.Salary, d.Name, e.Location });
+
+17. Q: Top 3 highest paid employees.
+var top3 = context.Employees.OrderByDescending(e => e.Salary).Take(3);
+
+18. Q: Employees from departments with only one employee.
+var result = context.Employees
+    .GroupBy(e => e.DeptId)
+    .Where(g => g.Count() == 1)
+    .SelectMany(g => g);
+
+19. Q: Employees starting with ‘A’ in IT department.
+var result = context.Employees
+    .Where(e => e.Name.StartsWith(\"A\"))
+    .Join(context.Departments.Where(d => d.Name == \"IT\"), e => e.DeptId, d => d.Id, (e, d) => e);
+
+20. Q: List all employees grouped by department with names.
+var result = context.Employees
+    .Join(context.Departments, e => e.DeptId, d => d.Id, (e, d) => new { e.Name, DeptName = d.Name })
+    .GroupBy(x => x.DeptName);
+
