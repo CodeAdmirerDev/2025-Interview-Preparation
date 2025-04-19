@@ -1,248 +1,438 @@
 ✅ Top 20 LINQ Logical Interview Questions (Week 1 Level)
 
-Remove duplicate elements from an integer array.
+1) Remove duplicate elements from an integer array?
 int[] nums = { 1, 2, 2, 3, 4, 4, 5 };
 var unique = nums.Distinct();
+//1, 2, 3, 4, 5 
 
-Remove duplicate characters from a string.
+2) Remove duplicate characters from a string?
 string input = "programming";
-var result = new string(input.Distinct().ToArray()); // "progamin"
+var result = new string(input.Distinct().ToArray()); 
+// "progamin"
 
-Find the first non-repeating character in a string.
+3) Find the first non-repeating character in a string?
+string input = "programming";
 char firstUnique = input.GroupBy(c => c)
                         .Where(g => g.Count() == 1)
                         .Select(g => g.Key)
                         .FirstOrDefault();
 
-Get all even numbers from an array.
+4) Get all even numbers from an array?
+int[] nums = { 1, 2, 2, 3, 4, 4, 5 };
 var evens = nums.Where(n => n % 2 == 0);
+//2, 2, 4, 4   
 
-Find the sum of all elements in a list.
+5) Find the sum of all elements in a list.
+int[] nums = { 1, 2, 3, 4, 5 };  
 int sum = nums.Sum();
+//15
 
-Count how many times each character appears in a string.
+6) Count how many times each character appears in a string?
+
+string input = "programming";
 var charCount = input.GroupBy(c => c)
                      .Select(g => new { Char = g.Key, Count = g.Count() });
+//Output
+p: 1  
+r: 2  
+o: 1  
+g: 2  
+a: 1  
+m: 2  
+i: 1  
+n: 1
 
-Check if all numbers in a list are positive.
+7) Check if all numbers in a list are positive?
+int[] nums = { 1, 2, 3, -1, 5 };
 bool allPositive = nums.All(n => n > 0);
+//False
 
-Check if any number is divisible by 5.
+8)Check if any number is divisible by 5?
+int[] nums = { 1, 2, 3, 4, 5 };
 bool anyDiv5 = nums.Any(n => n % 5 == 0);
+//True
 
-Find the maximum number from a list.
+9)Find the maximum number from a list?
+int[] nums = { 1, 2, 3, 4, 5 };
 int max = nums.Max();
+//5
 
-Find the minimum number from a list.
+10) Find the minimum number from a list?
+int[] nums = { 1, 2, 3, 4, 5 };
 int min = nums.Min();
+//1
 
-Find the second highest number in a list.
+11)Find the second highest number in a list?
+int[] nums = { 1, 2, 3, 4, 5 };
 int secondHighest = nums.Distinct().OrderByDescending(n => n).Skip(1).First();
+//4
 
-Find numbers that appear more than once in an array.
+12)Find numbers that appear more than once in an array?
+int[] nums = { 1, 2, 2, 3, 4, 4, 5 }; 
 var duplicates = nums.GroupBy(n => n)
                      .Where(g => g.Count() > 1)
                      .Select(g => g.Key);
 
-Convert a list of strings to uppercase.
+13)Convert a list of strings to uppercase?
+List<string> names = new List<string> { "alice", "bob", "charlie" };
 var upper = names.Select(n => n.ToUpper());
+//ALICE, BOB, CHARLIE
 
-Get only the first 3 characters from a string.
+14)Get only the first 3 characters from a string?
 string input = "interview";
-var first3 = new string(input.Take(3).ToArray()); // "int"
+var first3 = new string(input.Take(3).ToArray());
+// "int"
 
-Find common elements between two arrays.
+15) Find common elements between two arrays?
+int[] array1 = { 1, 2, 3, 4 };  
+int[] array2 = { 3, 4, 5, 6 };
+
 var common = array1.Intersect(array2);
+//3, 4
 
-Find elements in array1 but not in array2.
+16)Find elements in array1 but not in array2?
+int[] array1 = { 1, 2, 3, 4 };  
+int[] array2 = { 3, 4, 5, 6 };
 var diff = array1.Except(array2);
+//1, 2
 
-Reverse the characters in a string using LINQ.
+17) Reverse the characters in a string using LINQ?
+string input = "hello";
 var reversed = new string(input.Reverse().ToArray());
+//olleh
 
-Remove all white spaces from a string.
+18) Remove all white spaces from a string?
 string input = "  Hello World  ";
 var noSpaces = new string(input.Where(c => !char.IsWhiteSpace(c)).ToArray());
+//HelloWorld
 
-Count vowels in a string.
+19)Count vowels in a string?
+string input = "programming";
 int vowelCount = input.Count(c => "aeiouAEIOU".Contains(c));
+//3
 
-Select all strings with more than 5 characters from a list.
+20)Select all strings with more than 5 characters from a list?
+List<string> words = new List<string> { "apple", "banana", "cherry", "date" };
+
 var longWords = names.Where(s => s.Length > 5);
+//banana, cherry
 
-Find the top 3 most frequent elements in an integer array.
+21) Find the top 3 most frequent elements in an integer array?
+int[] nums = { 1, 2, 2, 3, 4, 4, 4, 5 };
 var top3 = nums.GroupBy(n => n)
                .OrderByDescending(g => g.Count())
                .Take(3)
                .Select(g => g.Key);
+//4, 2, 1 (or 4, 2, 3 depending on the implementation)
 
-Group words by their length.
+22) Group words by their length?
+List<string> words = new List<string> { "apple", "banana", "blue", "cherry" };
+
 var grouped = words.GroupBy(w => w.Length)
                    .Select(g => new { Length = g.Key, Words = g.ToList() });
+//Output
+Length: 5 -> Words: apple  
+Length: 6
 
-Check if a string contains all vowels at least once.
+23) Check if a string contains all vowels at least once?
+
+string input = "The quick brown fox jumps over the lazy dog";  
 bool containsAllVowels = "aeiou".All(v => input.Contains(v));
+//True
 
-Get words that start and end with the same character.
+24)Get words that start and end with the same character?
+
+List<string> words = new List<string> { "level", "radar", "program", "deified" };
 var matched = words.Where(w => w.Length > 0 && w.First() == w.Last());
+//level, radar, deified
 
-Find the character that appears most frequently in a string.
+25)Find the character that appears most frequently in a string?
+string input = "character";
 char mostFrequent = input.GroupBy(c => c)
                          .OrderByDescending(g => g.Count())
                          .Select(g => g.Key)
                          .First();
+//c
 
-Filter out numbers which are perfect squares.
+26) Filter out numbers which are perfect squares?
+int[] nums = { 1, 2, 3, 4, 5, 9, 10, 16 };
 var squares = nums.Where(n => Math.Sqrt(n) % 1 == 0);
+//2, 3, 5, 10
 
-Get all duplicate characters in a string (case insensitive).
+27) Get all duplicate characters in a string (case insensitive)?
+string input = "Programming";
+
 var duplicates = input.ToLower()
                       .GroupBy(c => c)
                       .Where(g => g.Count() > 1)
                       .Select(g => g.Key);
+//r, g
 
-Return elements along with their indexes using Select.
+28)Return elements along with their indexes using Select?
+int[] nums = { 10, 20, 30, 40 };
 var indexed = nums.Select((val, idx) => new { Index = idx, Value = val });
+//output
+Index: 0, Value: 10  
+Index: 1, Value: 20  
+Index: 2, Value: 30  
+Index: 3, Value: 40
 
-Split a string into words and return the longest word.
+29)Split a string into words and return the longest word?
+string input = "The quick brown fox jumps over the lazy dog";
 var longest = input.Split(' ')
                    .OrderByDescending(w => w.Length)
                    .FirstOrDefault();
+//jumps
 
-Count how many palindromes exist in a list of strings.
+30)Count how many palindromes exist in a list of strings?
+List<string> words = new List<string> { "level", "world", "madam", "civic", "hello" };
 var palindromes = words.Count(w => w.SequenceEqual(w.Reverse()));
+//3
 
-Find the sum of digits in a number using LINQ.
+31)Find the sum of digits in a number using LINQ?
 int num = 12345;
 int digitSum = num.ToString().Select(c => int.Parse(c.ToString())).Sum();
+//15
 
-Return only numeric strings from a string list.
+32)Return only numeric strings from a string list?
+List<string> strings = new List<string> { "123", "abc", "456", "def", "789" };
 var numericOnly = strings.Where(s => s.All(char.IsDigit));
+//123, 456, 789
 
-Get list of elements that appear only once in a list.
+33) Get list of elements that appear only once in a list?
+int[] nums = { 1, 2, 2, 3, 4, 4, 5 };
 var unique = nums.GroupBy(n => n)
                  .Where(g => g.Count() == 1)
                  .Select(g => g.Key);
+//1, 3, 5
 
-Flatten a list of string arrays and return distinct elements.
+34) Flatten a list of string arrays and return distinct elements?
+
+List<string[]> arrays = new List<string[]>  
+{  
+    new string[] { "apple", "banana" },  
+    new string[] { "banana", "cherry" },  
+    new string[] { "apple", "date" }  
+};
 var flattened = arrays.SelectMany(a => a).Distinct();
+//apple, banana, cherry, date
 
-Get the frequency of each word in a sentence.
+
+35)Get the frequency of each word in a sentence?
+
+string sentence = "hello world hello everyone";
 var freq = sentence.Split(' ')
                    .GroupBy(w => w)
                    .Select(g => new { Word = g.Key, Count = g.Count() });
+//output
+hello: 2  
+world: 1  
+everyone: 1
 
-Return characters that appear exactly twice in a string.
+36)Return characters that appear exactly twice in a string?
+string input = "programming";
 var exactlyTwice = input.GroupBy(c => c)
                         .Where(g => g.Count() == 2)
                         .Select(g => g.Key);
+//r, g
 
-Get common characters from two strings.
+37) Get common characters from two strings?
+string str1 = "character";  
+string str2 = "trace";
 var common = str1.Intersect(str2);
+//a, c, r, t
 
-Group names by their first letter.
+38) Group names by their first letter?
+List<string> names = new List<string> { "Alice", "Bob", "Charlie", "David", "Eve" };
+
 var grouped = names.GroupBy(n => n[0])
                    .Select(g => new { FirstChar = g.Key, Names = g.ToList() });
+//output
+A: Alice  
+B: Bob  
+C: Charlie  
+D: David  
+E: Eve
 
-From a list of integers, form pairs that add up to a given sum (e.g., 10).
-var target = 10;
+39) From a list of integers, form pairs that add up to a given sum (e.g., 10)?
+int[] nums = { 1, 2, 3, 7, 8, 9 };  
+int target = 10;
+
 var pairs = nums.SelectMany((x, i) =>
                 nums.Skip(i + 1),
                 (x, y) => new { x, y })
                 .Where(p => p.x + p.y == target);
+//(2, 8), (3, 7)
 
-Filter alphanumeric strings (contains both letters and digits).
+40) Filter alphanumeric strings (contains both letters and digits)?
+
+List<string> strings = new List<string> { "abc123", "abc", "123", "a1b2c3" };
 var alphanums = strings.Where(s => s.Any(char.IsLetter) && s.Any(char.IsDigit));
+//abc123, a1b2c3
 
-From an array of integers, find all triplets that sum to zero.
+41) From an array of integers, find all triplets that sum to zero?
+int[] nums = { -1, 0, 1, 2, -1, -4 };
+
 var triplets = nums.SelectMany((x, i) =>
     nums.Skip(i + 1).SelectMany((y, j) =>
         nums.Skip(i + j + 2).Where(z => x + y + z == 0).Select(z => new[] { x, y, z })));
+//[-1, -1, 2], [-1, 0, 1]
 
-Find the longest substring with unique characters in a string. (LINQ not ideal for substrings, but doable for logic mixing sliding window and LINQ)
+42)Find the longest substring with unique characters in a string. (LINQ not ideal for substrings, but doable for logic mixing sliding window and LINQ)?
+
+string input = "abcabcbb";
 var maxLength = input.Select((_, i) =>
     input.Skip(i).Aggregate("", (acc, c) =>
         acc.Contains(c) ? acc : acc + c))
     .OrderByDescending(s => s.Length)
     .FirstOrDefault();
+//abc
 
-Group integers by remainder when divided by 3.
+43) Group integers by remainder when divided by 3?
+
+int[] nums = { 1, 2, 3, 4, 5, 6, 7, 8 };
 var grouped = nums.GroupBy(n => n % 3)
                   .Select(g => new { Remainder = g.Key, Items = g.ToList() });
+//output
+Remainder 0: 3, 6  
+Remainder 1: 1, 4, 7  
+Remainder 2: 2, 5, 8
 
-Get all substrings of a string (length > 1).
+44) Get all substrings of a string (length > 1)?
+
+string input = "abc";
 var substrings = Enumerable.Range(0, input.Length)
     .SelectMany(i => Enumerable.Range(1, input.Length - i)
     .Select(len => input.Substring(i, len)))
     .Where(s => s.Length > 1);
+//ab, abc, bc
 
-Find if two strings are anagrams using LINQ.
+45)Find if two strings are anagrams using LINQ?
+
+string str1 = "listen";  
+string str2 = "silent";
 bool isAnagram = str1.OrderBy(c => c).SequenceEqual(str2.OrderBy(c => c));
+//True
 
-Return only prime numbers from an integer array using LINQ.
+46) Return only prime numbers from an integer array using LINQ?
+
+int[] nums = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 bool IsPrime(int n) => n > 1 && Enumerable.Range(2, (int)Math.Sqrt(n)).All(x => n % x != 0);
 var primes = nums.Where(IsPrime);
+//2, 3, 5, 7
 
-Find the word with the most vowels in a list.
+47)Find the word with the most vowels in a list?
+
+List<string> words = new List<string> { "apple", "banana", "cherry", "date" };
 Func<string, int> vowelCount = w => w.Count(c => "aeiouAEIOU".Contains(c));
 var maxVowelWord = words.OrderByDescending(vowelCount).First();
+//banana
 
-Return index of first element greater than all elements to its left.
+48)Return index of first element greater than all elements to its left?
+int[] nums = { 1, 3, 2, 4, 5 };
 var index = nums.Select((n, i) => new { n, i })
                 .Where(x => nums.Take(x.i).All(p => p < x.n))
                 .Select(x => x.i)
                 .FirstOrDefault();
+//3 (the value is 4, which is greater than all elements left of it)
 
-Get strings from a list where vowels are in ascending order.
+49)Get strings from a list where vowels are in ascending order?
+
+List<string> words = new List<string> { "aeiou", "hello", "abcde", "aae" };
 var result = words.Where(w =>
 {
     var vowels = w.Where(c => "aeiou".Contains(c));
     return vowels.SequenceEqual(vowels.OrderBy(c => c));
 });
+//aeiou, aae
 
-Return palindromes with length > 3.
+50)Return palindromes with length > 3?
+
+List<string> words = new List<string> { "level", "world", "madam", "civic", "noon" };
 var palins = words.Where(w => w.Length > 3 && w.SequenceEqual(w.Reverse()));
+//level, madam, civic
 
-Find second non-repeating character in a string.
+
+51) Find second non-repeating character in a string?
+string input = "programming";
+
 var secondUnique = input.GroupBy(c => c)
                         .Where(g => g.Count() == 1)
                         .Select(g => g.Key)
                         .Skip(1)
                         .FirstOrDefault();
+//m
 
-Find element with maximum frequency and return it with count.
+52) Find element with maximum frequency and return it with count?
+
+int[] nums = { 1, 2, 2, 3, 3, 3, 4 };
 var mostFreq = nums.GroupBy(n => n)
                    .OrderByDescending(g => g.Count())
                    .Select(g => new { g.Key, Count = g.Count() })
                    .FirstOrDefault();
+//Key: 3, Count: 3
 
-Flatten a nested list of integers.
-List<List<int>> nested = new List<List<int>> { new() { 1, 2 }, new() { 3, 4 } };
+53) Flatten a nested list of integers?
+
+List<List<int>> nested = new List<List<int>>   
+{   
+    new List<int> { 1, 2 },   
+    new List<int> { 3, 4 },   
+    new List<int> { 5 }  
+};
+
 var flat = nested.SelectMany(x => x);
+//1, 2, 3, 4, 5
 
-Return words that are panagrams (contain all 26 letters).
+54)Return words that are panagrams (contain all 26 letters)?
+
+List<string> sentences = new List<string>  
+{  
+    "The quick brown fox jumps over the lazy dog",  
+    "This is not a pangram"  
+};
+
 var panagrams = sentences.Where(s => "abcdefghijklmnopqrstuvwxyz"
                                      .All(c => s.ToLower().Contains(c)));
+//The quick brown fox jumps over the lazy dog
 
-Check if a list contains duplicates without using Distinct().
+55) Check if a list contains duplicates without using Distinct()?
+int[] nums = { 1, 1, 2, 3, 4 };
+
 bool hasDuplicates = nums.GroupBy(n => n).Any(g => g.Count() > 1);
+//True
 
-Find the longest word starting with a vowel.
+56)Find the longest word starting with a vowel?
+List<string> words = new List<string> { "apple", "banana", "orange", "kiwi" };
 var longVowelWord = words.Where(w => "aeiouAEIOU".Contains(w[0]))
                          .OrderByDescending(w => w.Length)
                          .FirstOrDefault();
+//orange
 
-Split list into even and odd indexed elements.
+57) Split list into even and odd indexed elements?
+int[] nums = { 1, 2, 3, 4, 5, 6 };
 var evens = nums.Where((val, idx) => idx % 2 == 0);
 var odds = nums.Where((val, idx) => idx % 2 != 0);
 
-Return all integers that are palindromes.
-var palNums = nums.Where(n => n.ToString() == new string(n.ToString().Reverse().ToArray()));
+//output
+Evens: 1, 3, 5  
+Odds: 2, 4, 6
 
-Check if characters in a string alternate between vowel and consonant.
+58) Return all integers that are palindromes?
+
+int[] nums = { 121, 123, 131, 14541, 12321 };
+var palNums = nums.Where(n => n.ToString() == new string(n.ToString().Reverse().ToArray()));
+//121, 131, 12321
+
+59) Check if characters in a string alternate between vowel and consonant?
+string input = "aebfcg";
 bool IsVowel(char c) => "aeiouAEIOU".Contains(c);
+
 bool isAlternating = input.Zip(input.Skip(1), (a, b) =>
     IsVowel(a) != IsVowel(b)).All(x => x);
+//True
 
-Count total number of digits in a list of strings.
+60) Count total number of digits in a list of strings?
+List<string> strings = new List<string> { "abc123", "def456", "789ghi" };
 int digitCount = strings.SelectMany(s => s).Count(char.IsDigit);
+//6
