@@ -1,0 +1,98 @@
+Week 3: Advanced LINQ plan with in-depth explanations, real-time examples, and commonly asked interview questions for each topic.
+
+✅ Day 15–16: Joins
+
+🔹 1. Inner Join
+Used to match elements from two sequences based on a key.
+
+var result = from emp in employees
+             join dept in departments
+             on emp.DeptId equals dept.Id
+             select new { emp.Name, dept.Name };
+
+🔹 2. GroupJoin
+Groups matching elements.
+
+var result = departments
+             .GroupJoin(employees,
+                        d => d.Id,
+                        e => e.DeptId,
+                        (dept, emps) => new {
+                            Department = dept.Name,
+                            Employees = emps.Select(e => e.Name)
+                        });
+
+🔹 3. SelectMany (for flattening collections)
+
+Useful when each element contains a collection you want to flatten.
+
+var result = departments
+             .SelectMany(d => d.Employees, 
+                         (d, e) => new { d.Name, e.Name });
+
+🎯 Interview Questions:
+What’s the difference between Join and GroupJoin?
+When would you use SelectMany over Select?
+Can you perform joins on multiple keys?
+
+✅ Day 17–18: Nested Queries
+🔹 1. LINQ inside LINQ
+
+var result = employees
+             .Where(e => departments
+                          .Where(d => d.Name == "HR")
+                          .Select(d => d.Id)
+                          .Contains(e.DeptId));
+
+🔹 2. Projecting Nested Objects
+
+var result = departments
+             .Select(d => new {
+                 d.Name,
+                 Employees = employees
+                             .Where(e => e.DeptId == d.Id)
+                             .Select(e => new { e.Name, e.Salary })
+             });
+
+🎯 Interview Questions:
+How do you perform nested LINQ queries?
+How to project nested collections with LINQ?
+What's the difference between Select and SelectMany?
+
+✅ Day 19–20: Dictionaries, HashSet & Custom Object Projections
+
+🔹 1. LINQ with Dictionary
+var result = dict
+             .Where(kv => kv.Value > 100)
+             .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+🔹 2. ToDictionary, ToLookup
+var dict = employees.ToDictionary(e => e.Id, e => e.Name);
+var lookup = employees.ToLookup(e => e.DeptId);
+
+🔹 3. Using HashSet for Distinct
+var deptIds = new HashSet<int> { 1, 3 };
+var filtered = employees
+               .Where(e => deptIds.Contains(e.DeptId));
+
+🎯 Interview Questions:
+Difference between ToDictionary and ToLookup?
+When should you use HashSet in LINQ filtering?
+How do you transform a list to a dictionary safely?
+
+✅ Day 21: Practice Use Case
+🧩 Scenario: Filter Employees by Department, Group by Salary Range
+var result = from emp in employees
+             join dept in departments on emp.DeptId equals dept.Id
+             where dept.Name == "IT"
+             group emp by emp.Salary > 50000 ? "High" : "Low" into salaryGroup
+             select new {
+                 SalaryLevel = salaryGroup.Key,
+                 Employees = salaryGroup.Select(e => e.Name)
+             };
+
+🧠 Real-time Use Case Ideas:
+Employees + Departments with filtering and grouping
+Orders grouped by month and filtered by product category
+Students grouped by grades and filtered by attendance
+
