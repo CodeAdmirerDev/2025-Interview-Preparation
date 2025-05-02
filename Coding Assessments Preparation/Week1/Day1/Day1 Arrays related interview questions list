@@ -34,7 +34,7 @@ Using the c# will try to solve the below array problems:
 30) Smallest Subarray with sum greater than a given value
 31) Three way partitioning of an array around a given value
 32) Minimum swaps required bring elements less equal K together
-32) Minimum no. of operations required to make an array palindrome
+32.1) Minimum no. of operations required to make an array palindrome
 33) Median of 2 sorted arrays of equal size
 34) Median of 2 sorted arrays of different size
 35) Largest number by joining numbers
