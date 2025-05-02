@@ -1,0 +1,167 @@
+16) Best Time to Buy and Sell Stock
+Explanation: Find max profit by buying low before selling high using single pass.
+
+using System;  
+class Program {  
+    static int MaxProfit(int[] prices) {  
+        int minPrice = int.MaxValue;  
+        int maxProfit = 0;  
+        foreach (int price in prices) {  
+            if (price < minPrice) 
+                minPrice = price;  
+            else if (price - minPrice > maxProfit) 
+              maxProfit = price - minPrice;  
+        }  
+        return maxProfit;  
+    }  
+
+    static void Main() {  
+        int[] prices = {7, 1, 5, 3, 6, 4};  
+        Console.WriteLine("Max profit: " + MaxProfit(prices));  
+    }  
+}  
+Input: [7, 1, 5, 3, 6, 4]
+Output:
+Max profit: 5 
+
+17) Find All Pairs in Array Whose Sum is Equal to Given Number
+Explanation: Use a HashSet to find complement and print pairs.
+
+using System;  
+using System.Collections.Generic;  
+class Program {  
+    static void FindPairs(int[] arr, int sum) {  
+        HashSet<int> s = new HashSet<int>();  
+        foreach (int num in arr) {  
+            int target = sum - num;  
+            if (s.Contains(target)) {  
+                Console.WriteLine($"Pair found: ({num}, {target})");  
+            }  
+            s.Add(num);  
+        }  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 5, 7, -1, 5};  
+        int sum = 6;  
+        FindPairs(arr, sum);  
+    }  
+}  
+Input: [1, 5, 7, -1, 5], sum = 6
+Output:
+Pair found: (5, 1)  
+Pair found: (7, -1)  
+Pair found: (5, 1)  
+
+18) Find Common Elements in 3 Sorted Arrays
+Explanation: Use three pointers simultaneously to find common elements.
+
+using System;  
+using System.Collections.Generic;  
+class Program {  
+    static List<int> CommonElements(int[] A, int[] B, int[] C) {  
+        List<int> result = new List<int>();  
+        int i = 0, j = 0, k = 0;  
+
+        while (i < A.Length && j < B.Length && k < C.Length) {  
+            if (A[i] == B[j] && B[j] == C[k]) {  
+                result.Add(A[i]);  
+                i++; j++; k++;  
+            } else {  
+                int minVal = Math.Min(A[i], Math.Min(B[j], C[k]));  
+                if (A[i] == minVal) i++;  
+                if (B[j] == minVal) j++;  
+                if (C[k] == minVal) k++;  
+            }  
+        }  
+        return result;  
+    }  
+
+    static void Main() {  
+        int[] A = {1, 5, 10, 20, 40, 80};  
+        int[] B = {6, 7, 20, 80, 100};  
+        int[] C = {3, 4, 15, 20, 30, 70, 80, 120};  
+
+        List<int> common = CommonElements(A, B, C);  
+        Console.WriteLine("Common elements: " + string.Join(", ", common));  
+    }  
+}  
+
+Input:
+A = [1, 5, 10, 20, 40, 80]
+B = [6, 7, 20, 80, 100]
+C = [3, 4, 15, 20, 30, 70, 80, 120]
+
+Output:
+Common elements: 20, 80  
+
+19) Rearrange Array in Alternating Positive and Negative Items with O(1) Extra Space
+
+Explanation: Use partition to separate positives and negatives then merge alternating.
+
+using System;  
+
+class Program {  
+    static void Rearrange(int[] arr) {  
+        int n = arr.Length;  
+        int i = -1;  
+        // Partition negatives on left  
+        for (int j = 0; j < n; j++) {  
+            if (arr[j] < 0) {  
+                i++;  
+                (arr[i], arr[j]) = (arr[j], arr[i]);  
+            }  
+        }  
+
+        int pos = i + 1, neg = 0;  
+
+        // Swap alternate negative and positive numbers  
+        while (pos < n && neg < pos && arr[neg] < 0) {  
+            (arr[neg], arr[pos]) = (arr[pos], arr[neg]);  
+            pos++;  
+            neg += 2;  
+        }  
+    }  
+
+    static void Main() {  
+        int[] arr = {2, 3, -4, -1, 6, -9};  
+        Console.WriteLine("Original: " + string.Join(", ", arr));  
+        Rearrange(arr);  
+        Console.WriteLine("Rearranged: " + string.Join(", ", arr));  
+    }  
+}  
+Input: [2, 3, -4, -1, 6, -9]
+
+Output:
+Original: 2, 3, -4, -1, 6, -9  
+Rearranged: -4, 2, -1, 3, -9, 6  
+
+20) Find If There Is Any Subarray With Sum Equal to 0
+Explanation: Use prefix sums and a HashSet to detect zero-sum subarray.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static bool HasZeroSumSubarray(int[] arr) {  
+        HashSet<int> set = new HashSet<int>();  
+        int sum = 0;  
+        foreach (int val in arr) {  
+            sum += val;  
+            if (val == 0 || sum == 0 || set.Contains(sum))  
+                return true;  
+            set.Add(sum);  
+        }  
+        return false;  
+    }  
+
+    static void Main() {  
+        int[] arr = {4, 2, -3, 1, 6};  
+        Console.WriteLine("Has zero-sum subarray? " + HasZeroSumSubarray(arr));  
+    }  
+}  
+
+Input: [4, 2, -3, 1, 6]
+
+Output:
+Has zero-sum subarray? True  
