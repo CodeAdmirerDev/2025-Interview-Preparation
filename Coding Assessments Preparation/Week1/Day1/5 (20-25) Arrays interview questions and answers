@@ -1,0 +1,186 @@
+21) Find Factorial of a Large Number
+Explanation: Since factorial can be very large, store digits in an array (or List) and multiply manually.
+
+using System;  
+using System.Collections.Generic;  
+class Program {  
+    static List<int> Factorial(int n) {  
+        List<int> res = new List<int> {1};  
+
+        for (int i = 2; i <= n; i++) {  
+            int carry = 0;  
+            for (int j = 0; j < res.Count; j++) {  
+                int prod = res[j] * i + carry;  
+                res[j] = prod % 10;  
+                carry = prod / 10;  
+            }  
+            while (carry > 0) {  
+                res.Add(carry % 10);  
+                carry /= 10;  
+            }  
+        }  
+        res.Reverse();  
+        return res;  
+    }  
+
+    static void Main() {  
+        int n = 20;  
+        var fact = Factorial(n);  
+        Console.WriteLine($"Factorial of {n} is:");  
+        Console.WriteLine(string.Join("", fact));  
+    }  
+}  
+Input: 20
+Output:
+Factorial of 20 is:  
+2432902008176640000  
+
+22) Find Maximum Product Subarray
+Explanation: Keep track of max and min product ending at each index because negative * negative = positive.
+
+using System;  
+class Program {  
+    static int MaxProduct(int[] arr) {  
+        int maxSoFar = arr[0];  
+        int maxEndingHere = arr[0];  
+        int minEndingHere = arr[0];  
+
+        for (int i = 1; i < arr.Length; i++) {  
+            if (arr[i] < 0) {  
+                int temp = maxEndingHere;  
+                maxEndingHere = minEndingHere;  
+                minEndingHere = temp;  
+            }  
+
+            maxEndingHere = Math.Max(arr[i], maxEndingHere * arr[i]);  
+            minEndingHere = Math.Min(arr[i], minEndingHere * arr[i]);  
+
+            maxSoFar = Math.Max(maxSoFar, maxEndingHere);  
+        }  
+        return maxSoFar;  
+    }  
+
+    static void Main() {  
+        int[] arr = {6, -3, -10, 0, 2};  
+        Console.WriteLine("Maximum product subarray is " + MaxProduct(arr));  
+    }  
+}  
+
+Input: [6, -3, -10, 0, 2]
+Output:
+Maximum product subarray is 180  
+
+23) Find Longest Consecutive Subsequence
+Explanation: Use a HashSet to quickly check consecutive elements.
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static int LongestConsecutive(int[] nums) {  
+        HashSet<int> set = new HashSet<int>(nums);  
+        int longestStreak = 0;  
+
+        foreach (var num in set) {  
+            if (!set.Contains(num - 1)) {  
+                int currentNum = num;  
+                int currentStreak = 1;  
+
+                while (set.Contains(currentNum + 1)) {  
+                    currentNum++;  
+                    currentStreak++;  
+                }  
+
+                longestStreak = Math.Max(longestStreak, currentStreak);  
+            }  
+        }  
+        return longestStreak;  
+    }  
+
+    static void Main() {  
+        int[] nums = {100, 4, 200, 1, 3, 2};  
+        Console.WriteLine("Longest consecutive subsequence length: " + LongestConsecutive(nums));  
+    }  
+}  
+Input: [100, 4, 200, 1, 3, 2]
+Output:
+Longest consecutive subsequence length: 4  
+
+24) Find All Elements that Appear More Than n/k Times
+Explanation: Use a dictionary (HashMap) to count frequency and filter.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static void MoreThanNK(int[] arr, int k) {  
+        int n = arr.Length;  
+        Dictionary<int, int> freq = new Dictionary<int, int>();  
+
+        foreach (int num in arr) {  
+            freq[num] = freq.GetValueOrDefault(num, 0) + 1;  
+        }  
+
+        Console.WriteLine($"Elements appearing more than n/{k} times:");  
+        foreach (var kvp in freq) {  
+            if (kvp.Value > n / k) {  
+                Console.WriteLine(kvp.Key);  
+            }  
+        }  
+    }  
+
+    static void Main() {  
+        int[] arr = {3, 1, 2, 2, 1, 2, 3, 3};  
+        int k = 4;  
+        MoreThanNK(arr, k);  
+    }  
+}  
+
+Input: [3,1,2,2,1,2,3,3], k=4
+Output:
+Elements appearing more than n/4 times:  
+2  
+3  
+
+25) Maximum Profit by Buying and Selling Stock at Most Twice
+Explanation:
+
+Forward pass: Calculate max profit if sold on or before ith day.
+Backward pass: Calculate max profit if bought on or after ith day.
+Combine both for max total profit.
+
+using System;  
+class Program {  
+    static int MaxProfitTwoTransactions(int[] prices) {  
+        int n = prices.Length;  
+        if (n == 0) return 0;  
+        
+        int[] leftProfit = new int[n];  
+        int minPrice = prices[0];  
+        for (int i = 1; i < n; i++) {  
+            minPrice = Math.Min(minPrice, prices[i]);  
+            leftProfit[i] = Math.Max(leftProfit[i - 1], prices[i] - minPrice);  
+        }  
+        
+        int[] rightProfit = new int[n + 1];  
+        int maxPrice = prices[n - 1];  
+        for (int i = n - 2; i >= 0; i--) {  
+            maxPrice = Math.Max(maxPrice, prices[i]);  
+            rightProfit[i] = Math.Max(rightProfit[i + 1], maxPrice - prices[i]);  
+        }  
+        
+        int maxProfit = 0;  
+        for (int i = 0; i < n; i++) {  
+            maxProfit = Math.Max(maxProfit, leftProfit[i] + rightProfit[i + 1]);  
+        }  
+        return maxProfit;  
+    }  
+
+    static void Main() {  
+        int[] prices = {3, 3, 5, 0, 0, 3, 1, 4};  
+        Console.WriteLine("Max profit with two transactions: " + MaxProfitTwoTransactions(prices));  
+    }  
+}  
+
+Input: [3, 3, 5, 0, 0, 3, 1, 4]
+Output:
+Max profit with two transactions: 6  
