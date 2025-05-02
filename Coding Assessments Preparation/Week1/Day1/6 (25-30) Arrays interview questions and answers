@@ -1,0 +1,169 @@
+26) Find Whether One Array is Subset of Another Array
+Explanation: Use a dictionary (frequency map) to check if all elements of subset exist in larger array.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static bool IsSubset(int[] arr1, int[] arr2) {  
+        Dictionary<int, int> freq = new Dictionary<int, int>();  
+        
+        foreach (int num in arr1)  
+            freq[num] = freq.GetValueOrDefault(num, 0) + 1;  
+        
+        foreach (int num in arr2) {  
+            if (!freq.ContainsKey(num) || freq[num] == 0)  
+                return false;  
+            freq[num]--;  
+        }  
+        return true;  
+    }  
+
+    static void Main() {  
+        int[] arr1 = {11, 1, 13, 21, 3, 7};  
+        int[] arr2 = {11, 3, 7, 1};  
+        Console.WriteLine("Is subset? " + IsSubset(arr1, arr2));  
+    }  
+}  
+Input:
+arr1 = [11, 1, 13, 21, 3, 7],
+arr2 = [11, 3, 7, 1]
+
+Output:
+Is subset? True  
+
+27) Find Triplet That Sum to a Given Value
+
+Explanation: Fix one element, use two pointers to find if pair with required sum exists.
+
+using System;  
+class Program {  
+    static bool FindTriplet(int[] arr, int sum) {  
+        Array.Sort(arr);  
+        for (int i = 0; i < arr.Length - 2; i++) {  
+            int left = i + 1, right = arr.Length - 1;  
+            while (left < right) {  
+                int currentSum = arr[i] + arr[left] + arr[right];  
+                if (currentSum == sum) return true;  
+                else if (currentSum < sum) left++;  
+                else right--;  
+            }  
+        }  
+        return false;  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 4, 45, 6, 10, 8};  
+        int sum = 22;  
+        Console.WriteLine("Triplet with sum " + sum + " exists: " + FindTriplet(arr, sum));  
+    }  
+}  
+
+Input: [1, 4, 45, 6, 10, 8], sum = 22
+Output:
+Triplet with sum 22 exists: True 
+
+28) Trapping Rain Water Problem
+Explanation:
+Calculate how much water can be trapped between bars representing heights.
+Use two arrays: leftMax[] and rightMax[] for max height to left & right.
+Water trapped on ith bar = min(leftMax[i], rightMax[i]) - height[i].
+
+csharp
+using System;  
+
+class Program {  
+    static int Trap(int[] height) {  
+        int n = height.Length;  
+        if (n == 0) return 0;  
+
+        int[] leftMax = new int[n];  
+        int[] rightMax = new int[n];  
+        leftMax[0] = height[0];  
+        for (int i = 1; i < n; i++)  
+            leftMax[i] = Math.Max(leftMax[i - 1], height[i]);  
+
+        rightMax[n - 1] = height[n - 1];  
+        for (int i = n - 2; i >= 0; i--)  
+            rightMax[i] = Math.Max(rightMax[i + 1], height[i]);  
+
+        int trappedWater = 0;  
+        for (int i = 0; i < n; i++)  
+            trappedWater += Math.Min(leftMax[i], rightMax[i]) - height[i];  
+
+        return trappedWater;  
+    }  
+
+    static void Main() {  
+        int[] height = {0,1,0,2,1,0,1,3,2,1,2,1};  
+        Console.WriteLine("Trapped water: " + Trap(height));  
+    }  
+}  
+Input: [0,1,0,2,1,0,1,3,2,1,2,1]
+Output:
+Trapped water: 6  
+
+29) Find Majority Element in an Array
+
+Explanation: Use Boyer-Moore Voting algorithm to find element that appears more than n/2 times.
+
+using System;  
+
+class Program {  
+    static int FindMajorityElement(int[] nums) {  
+        int count = 0, candidate = 0;  
+        foreach (int num in nums) {  
+            if (count == 0) candidate = num;  
+            count += (num == candidate) ? 1 : -1;  
+        }  
+        // Verify candidate  
+        count = 0;  
+        foreach (int num in nums)  
+            if (num == candidate) count++;  
+        return (count > nums.Length / 2) ? candidate : -1; // -1 if no majority  
+    }  
+
+    static void Main() {  
+        int[] arr = {2, 2, 1, 1, 1, 2, 2};  
+        int maj = FindMajorityElement(arr);  
+        Console.WriteLine((maj != -1) ? $"Majority element is {maj}" : "No majority element");  
+    }  
+}  
+
+Input: [2, 2, 1, 1, 1, 2, 2]
+Output:Majority element is 2  
+
+30) Maximum Size Subarray Sum Equals k
+
+Explanation:Find max length of subarray with sum == k using prefix sums and hashmap.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static int MaxSubArrayLen(int[] nums, int k) {  
+        Dictionary<int, int> sumIndex = new Dictionary<int, int>();  
+        int sum = 0, maxLen = 0;  
+
+        for (int i = 0; i < nums.Length; i++) {  
+            sum += nums[i];  
+            if (sum == k) maxLen = i + 1;  
+
+            if (!sumIndex.ContainsKey(sum))  
+                sumIndex[sum] = i;  
+
+            if (sumIndex.ContainsKey(sum - k))  
+                maxLen = Math.Max(maxLen, i - sumIndex[sum - k]);  
+        }  
+        return maxLen;  
+    }  
+
+    static void Main() {  
+        int[] nums = {1, -1, 5, -2, 3};  
+        int k = 3;  
+        Console.WriteLine("Max length of subarray summing to k: " + MaxSubArrayLen(nums, k));  
+    }  
+}  
+
+Input: [1, -1, 5, -2, 3], k = 3
+Output:Max length of subarray summing to k: 4  
