@@ -1,0 +1,171 @@
+31) Find Longest Substring Without Repeating Characters (Array variant)
+
+Explanation:Use sliding window with a hash map or set to track characters and current substring length.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static int LengthOfLongestSubstring(string s) {  
+        HashSet<char> set = new HashSet<char>();  
+        int left = 0, maxLen = 0;  
+
+        for (int right = 0; right < s.Length; right++) {  
+            while(set.Contains(s[right])) {  
+                set.Remove(s[left]);  
+                left++;  
+            }  
+            set.Add(s[right]);  
+            maxLen = Math.Max(maxLen, right - left +1);  
+        }  
+        return maxLen;  
+    }  
+
+    static void Main() {  
+        string s = "abcabcbb";  
+        Console.WriteLine("Length of longest substring without repeating characters: " + LengthOfLongestSubstring(s));  
+    }  
+}  
+
+Input: "abcabcbb"
+Output: Length of longest substring without repeating characters: 3  
+
+32) Find All Anagrams of a String in Another String
+
+Explanation: Use sliding window with frequency counts to find all substrings that are anagrams.
+
+using System;  
+using System.Collections.Generic;  
+
+class Program {  
+    static IList<int> FindAnagrams(string s, string p) {  
+        var result = new List<int>();  
+        if (p.Length > s.Length) return result;  
+
+        int[] pCount = new int[26];  
+        int[] sCount = new int[26];  
+
+        for (int i = 0; i < p.Length; i++) {  
+            pCount[p[i] - 'a']++;  
+            sCount[s[i] - 'a']++;  
+        }  
+
+        if (Compare(pCount, sCount)) result.Add(0);  
+
+        for (int i = p.Length; i < s.Length; i++) {  
+            sCount[s[i] - 'a']++;  
+            sCount[s[i - p.Length] - 'a']--;  
+            if (Compare(pCount, sCount)) result.Add(i - p.Length + 1);  
+        }  
+        return result;  
+    }  
+
+    static bool Compare(int[] a, int[] b) {  
+        for (int i = 0; i < 26; i++) {  
+            if (a[i] != b[i]) return false;  
+        }  
+        return true;  
+    }  
+
+    static void Main() {  
+        string s = "cbaebabacd";  
+        string p = "abc";  
+        var indices = FindAnagrams(s, p);  
+        Console.WriteLine("Anagram start indices: " + string.Join(", ", indices));  
+    }  
+}  
+
+Input: s = "cbaebabacd", p = "abc"
+Output: Anagram start indices: 0, 6  
+
+33) Count Total Set Bits in All Numbers from 1 to N
+Explanation: Use recursion and patterns in bits to count set bits efficiently.
+
+using System;  
+
+class Program {  
+    static int CountSetBits(int n) {  
+        if (n == 0) return 0;  
+
+        int x = LargestPowerOf2(n);  
+
+        int bitsUpTo2x = x * (1 << (x - 1));  
+        int msbFrom2xToN = n - (1 << x) + 1;  
+        int rest = n - (1 << x);  
+        
+        return bitsUpTo2x + msbFrom2xToN + CountSetBits(rest);  
+    }  
+
+    static int LargestPowerOf2(int n) {  
+        int x = 0;  
+        while ((1 << x) <= n)  
+            x++;  
+        return x - 1;  
+    }  
+
+    static void Main() {  
+        int n = 17;  
+        Console.WriteLine("Total set bits from 1 to " + n + ": " + CountSetBits(n));  
+    }  
+}  
+
+Input: 17
+Output: Total set bits from 1 to 17: 35  
+
+
+34) Find a Peak Element in Array
+
+Explanation:A peak element is strictly greater than its neighbors. Use binary search to find any peak efficiently.
+
+using System;  
+class Program {  
+    static int FindPeakElement(int[] nums) {  
+        int left = 0, right = nums.Length - 1;  
+        while (left < right) {  
+            int mid = (left + right) / 2;  
+            if (nums[mid] > nums[mid + 1])  
+                right = mid;  
+            else  
+                left = mid + 1;  
+        }  
+        return left;  
+    }  
+
+    static void Main() {  
+        int[] nums = {1, 3, 20, 4, 1, 0};  
+        int peakIndex = FindPeakElement(nums);  
+        Console.WriteLine($"Peak element {nums[peakIndex]} found at index {peakIndex}");  
+    }  
+}  
+
+Input: [1, 3, 20, 4, 1, 0]
+Output:Peak element 20 found at index 2  
+
+35) Count Pairs with Given Sum in an Array
+
+Explanation:Use a dictionary (hash map) to count frequencies and find pairs efficiently.
+
+using System;  
+using System.Collections.Generic;  
+class Program {  
+    static int CountPairs(int[] arr, int sum) {  
+        Dictionary<int, int> freq = new Dictionary<int, int>();  
+        int count = 0;  
+        foreach (int num in arr) {  
+            int target = sum - num;  
+            if (freq.ContainsKey(target))  
+                count += freq[target];  
+            freq[num] = freq.GetValueOrDefault(num, 0) + 1;  
+        }  
+        return count;  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 5, 7, -1, 5};  
+        int sum = 6;  
+        Console.WriteLine($"Count of pairs with sum {sum} is: {CountPairs(arr, sum)}");  
+    }  
+}  
+
+Input: [1, 5, 7, -1, 5], sum = 6
+Output:Count of pairs with sum 6 is: 3 
