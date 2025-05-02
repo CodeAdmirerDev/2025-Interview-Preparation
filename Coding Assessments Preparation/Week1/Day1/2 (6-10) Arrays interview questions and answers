@@ -1,0 +1,166 @@
+6) Cyclically Rotate an Array by One
+Explanation: Move the last element to the front and shift others right.
+
+using System;  
+class Program {  
+    static void CyclicRotate(int[] arr) {  
+        if (arr.Length == 0) return;  
+        
+        int last = arr[^1]; // last element  
+        for (int i = arr.Length - 1; i > 0; i--) {  
+            arr[i] = arr[i - 1];  
+        }  
+        arr[0] = last;  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 2, 3, 4, 5};  
+        Console.WriteLine("Original: " + string.Join(", ", arr));  
+        CyclicRotate(arr);  
+        Console.WriteLine("Rotated: " + string.Join(", ", arr));  
+    }  
+}  
+Input: [1, 2, 3, 4, 5]
+Output:
+Original: 1, 2, 3, 4, 5  
+Rotated: 5, 1, 2, 3, 4  
+
+7) Find Largest Sum Contiguous Subarray (Kadane’s Algorithm)
+Explanation: Keep track of current max sum ending here and global max sum.
+
+using System;  
+class Program {  
+    static int MaxSubArraySum(int[] arr) {  
+        int maxSoFar = arr[0];  
+        int maxEndingHere = arr[0];  
+
+        for (int i = 1; i < arr.Length; i++) {  
+            maxEndingHere = Math.Max(arr[i], maxEndingHere + arr[i]);  
+            maxSoFar = Math.Max(maxSoFar, maxEndingHere);  
+        }  
+        return maxSoFar;  
+    }  
+
+    static void Main() {  
+        int[] arr = {-2, -3, 4, -1, -2, 1, 5, -3};  
+        Console.WriteLine("Maximum contiguous sum is " + MaxSubArraySum(arr));  
+    }  
+}  
+Input: [-2, -3, 4, -1, -2, 1, 5, -3]
+Output:
+Maximum contiguous sum is 7  
+
+8) Minimise Maximum Difference Between Heights
+Problem: Given array of heights and integer k, minimize the difference between max and min heights after increasing or decreasing each height by k.
+
+Explanation: Sort the array. Modify extremes carefully to minimize difference.
+
+using System;  
+class Program {  
+    static int MinimizeMaxDiff(int[] arr, int k) {  
+        Array.Sort(arr);  
+        int n = arr.Length;  
+        int result = arr[n-1] - arr[0]; // Max diff without changes  
+
+        int small = arr[0] + k;  
+        int big = arr[n -1] - k;  
+
+        if (small > big) (small, big) = (big, small);  
+
+        for (int i = 1; i < n - 1; i++) {  
+            int subtract = arr[i] - k;  
+            int add = arr[i] + k;  
+
+            if (subtract >= small || add <= big) continue;  
+
+            if (big - subtract <= add - small) {  
+                small = subtract;  
+            } else {  
+                big = add;  
+            }  
+        }  
+
+        return Math.Min(result, big - small);  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 15, 10};  
+        int k = 6;  
+        Console.WriteLine("Minimum difference is " + MinimizeMaxDiff(arr, k));  
+    }  
+}  
+
+Input: [1, 15, 10], k=6
+Output:
+Minimum difference is 5  
+
+9) Minimum Number of Jumps to Reach End of Array
+Problem: Given an array where element denotes max jump length from that position, find minimum jumps to reach end.
+
+Explanation: Use greedy approach to track reachable range and jumps.
+
+using System;  
+
+class Program {  
+    static int MinJumps(int[] arr) {  
+        if (arr.Length <= 1) return 0;  
+        if (arr[0] == 0) return -1;  
+
+        int maxReach = arr[0];  
+        int step = arr[0];  
+        int jump = 1;  
+
+        for (int i = 1; i < arr.Length; i++) {  
+            if (i == arr.Length - 1) return jump;  
+            maxReach = Math.Max(maxReach, i + arr[i]);  
+            step--;  
+            if (step == 0) {  
+                jump++;  
+                if (i >= maxReach) return -1;  
+                step = maxReach - i;  
+            }  
+        }  
+        return -1;  
+    }  
+
+    static void Main() {  
+        int[] arr = {2, 3, 1, 1, 4};  
+        Console.WriteLine("Minimum jumps to reach end: " + MinJumps(arr));  
+    }  
+}  
+
+Input: [2, 3, 1, 1, 4]
+Output:
+Minimum jumps to reach end: 2  
+
+10) Find Duplicate in an Array of N+1 Integers where each integer is between 1 and N
+
+Explanation: Use Floyd's Tortoise and Hare cycle detection algorithm since duplicate creates a cycle.
+
+using System;  
+class Program {  
+    static int FindDuplicate(int[] nums) {  
+        int slow = nums[0];  
+        int fast = nums[0];  
+        do {  
+            slow = nums[slow];  
+            fast = nums[nums[fast]];  
+        } while (slow != fast);  
+
+        fast = nums[0];  
+        while (slow != fast) {  
+            slow = nums[slow];  
+            fast = nums[fast];  
+        }  
+        return slow;  
+    }  
+
+    static void Main() {  
+        int[] arr = {1, 3, 4, 2, 2};  
+        Console.WriteLine("Duplicate element is: " + FindDuplicate(arr));  
+    }  
+}  
+Input: [1, 3, 4, 2, 2]
+
+Output:
+Duplicate element is: 2  
