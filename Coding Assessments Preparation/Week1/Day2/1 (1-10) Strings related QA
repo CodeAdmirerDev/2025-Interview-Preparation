@@ -1,0 +1,252 @@
+1. Reverse a String
+Problem: Reverse the characters of a string.
+
+Input: "hello"
+Output: "olleh"
+
+Explanation: Use two pointers (start and end) and swap characters until they meet.
+
+C# Code:
+string ReverseString(string input)
+{
+    char[] charArray = input.ToCharArray();
+    Array.Reverse(charArray);
+    return new string(charArray);
+}
+
+2. Check whether a String is Palindrome or not
+Problem: Check if a string reads the same backward.
+
+Input: "madam"
+Output: True
+
+Explanation: Compare characters from both ends moving towards the center.
+
+C# Code:
+
+bool IsPalindrome(string input)
+{
+    int i = 0, j = input.Length - 1;
+    while (i < j)
+    {
+        if (input[i] != input[j])
+            return false;
+        i++; j--;
+    }
+    return true;
+}
+
+3. Find Duplicate characters in a string
+Problem: Identify characters that appear more than once.
+
+Input: "programming"
+Output: r, g, m
+
+Explanation: Use a dictionary to count character frequencies.
+
+C# Code:
+
+void FindDuplicates(string input)
+{
+    Dictionary<char, int> map = new Dictionary<char, int>();
+    foreach (char c in input)
+    {
+        if (map.ContainsKey(c))
+            map[c]++;
+        else
+            map[c] = 1;
+    }
+
+    foreach (var kvp in map)
+    {
+        if (kvp.Value > 1)
+            Console.WriteLine($"{kvp.Key} occurs {kvp.Value} times");
+    }
+}
+
+4. Why strings are immutable in C#?
+Explanation:
+
+In C#, string objects are immutable, meaning once a string is created, its contents cannot be changed. Any operation that appears to modify a string actually creates a new string in memory.
+
+Reasons:
+
+Security:
+Strings are often used to represent sensitive data such as file paths, URLs, and query strings. Immutability ensures that once a string is created, it cannot be altered by malicious code.
+
+Thread-Safety:
+Since strings cannot be changed after creation, they are inherently thread-safe. Multiple threads can use the same string instance without synchronization.
+
+Caching and Interning:
+The .NET runtime uses a string intern pool to store string literals. Because strings are immutable, identical strings can safely share the same memory reference, improving memory efficiency.
+
+Performance Optimization:
+Immutability enables various compiler and runtime optimizations, such as constant folding and reuse of compiled string literals.
+
+
+5. Check whether one string is a rotation of another
+Problem: Check if B is a rotation of A.
+
+Input: "abcd" and "cdab"
+
+Output: True
+
+Explanation: Concatenate string A with itself and check if B is a substring of it.
+
+C# Code:
+bool IsRotation(string A, string B)
+{
+    if (A.Length != B.Length) return false;
+    string temp = A + A;
+    return temp.Contains(B);
+}
+
+6. Check if a string is a valid shuffle of two strings
+
+Problem: Validate if the third string is a shuffle of two others.
+
+Input: "abc", "def", "dabecf"
+
+Output: True
+
+Explanation: Check if all characters from both strings are used in order in the shuffled string.
+
+C# Code:
+bool IsValidShuffle(string s1, string s2, string result)
+{
+    if (s1.Length + s2.Length != result.Length) return false;
+
+    int i = 0, j = 0, k = 0;
+    while (k < result.Length)
+    {
+        if (i < s1.Length && result[k] == s1[i]) i++;
+        else if (j < s2.Length && result[k] == s2[j]) j++;
+        else return false;
+        k++;
+    }
+    return i == s1.Length && j == s2.Length;
+}
+
+7. Count and Say Problem
+Problem: Given n, return the nth term in the count-and-say sequence.
+
+Input: 4
+Output: "1211"
+
+Explanation:
+1 → "one 1" → 11
+11 → "two 1s" → 21
+21 → "one 2, one 1" → 1211
+
+C# Code:
+
+string CountAndSay(int n)
+{
+    if (n == 1) return "1";
+    string prev = CountAndSay(n - 1);
+    StringBuilder sb = new StringBuilder();
+    int count = 1;
+    for (int i = 1; i <= prev.Length; i++)
+    {
+        if (i < prev.Length && prev[i] == prev[i - 1])
+            count++;
+        else
+        {
+            sb.Append(count.ToString() + prev[i - 1]);
+            count = 1;
+        }
+    }
+    return sb.ToString();
+}
+
+8. Longest Palindromic Substring
+
+Problem: Find the longest palindrome substring.
+
+Input: "babad"
+
+Output: "bab" or "aba"
+
+Explanation: Expand around each center and check for palindrome.
+
+C# Code:
+
+string LongestPalindrome(string s)
+{
+    if (string.IsNullOrEmpty(s)) return "";
+
+    int start = 0, end = 0;
+
+    for (int i = 0; i < s.Length; i++)
+    {
+        int len1 = ExpandAroundCenter(s, i, i);
+        int len2 = ExpandAroundCenter(s, i, i + 1);
+        int len = Math.Max(len1, len2);
+
+        if (len > end - start)
+        {
+            start = i - (len - 1) / 2;
+            end = i + len / 2;
+        }
+    }
+    return s.Substring(start, end - start + 1);
+}
+
+int ExpandAroundCenter(string s, int left, int right)
+{
+    while (left >= 0 && right < s.Length && s[left] == s[right])
+    {
+        left--; right++;
+    }
+    return right - left - 1;
+}
+
+9. Longest Recurring Subsequence
+Problem: Find the longest subsequence that repeats itself.
+
+Input: "aab"
+Output: "a"
+
+Explanation: Use dynamic programming. Compare characters at different indexes.
+
+C# Code:
+
+int LongestRepeatingSubseq(string str)
+{
+    int n = str.Length;
+    int[,] dp = new int[n + 1, n + 1];
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (str[i - 1] == str[j - 1] && i != j)
+                dp[i, j] = 1 + dp[i - 1, j - 1];
+            else
+                dp[i, j] = Math.Max(dp[i, j - 1], dp[i - 1, j]);
+        }
+    }
+    return dp[n, n];
+}
+
+10. Print all Subsequences of a string
+Problem: Print all possible subsequences (not substrings).
+
+Input: "abc"
+Output: a, b, c, ab, ac, bc, abc
+
+Explanation: Use recursion: at each step include or exclude the current character.
+
+C# Code:
+
+void PrintSubsequences(string input, string output = "")
+{
+    if (input.Length == 0)
+    {
+        Console.WriteLine(output);
+        return;
+    }
+
+    PrintSubsequences(input.Substring(1), output + input[0]); // include
+    PrintSubsequences(input.Substring(1), output);             // exclude
+}
