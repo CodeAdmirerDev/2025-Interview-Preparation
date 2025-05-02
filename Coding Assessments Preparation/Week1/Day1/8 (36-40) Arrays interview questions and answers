@@ -1,0 +1,145 @@
+36) Reorganize String
+
+Problem: Given a string s, rearrange the characters so that no two adjacent characters are the same. Return any possible rearrangement. If not possible, return an empty string.
+
+Approach:Count frequency of each character.
+
+Use a max heap to pick the most frequent characters first.
+
+Greedily build the result by choosing the highest-frequency character that doesn’t violate the "no two adjacent characters" rule.
+
+Code (C#):
+public string ReorganizeString(string s)
+{
+    var freq = new Dictionary<char, int>();
+    foreach (char c in s)
+        freq[c] = freq.GetValueOrDefault(c, 0) + 1;
+
+    var pq = new PriorityQueue<(char ch, int freq), int>(Comparer<int>.Create((x, y) => y.CompareTo(x)));
+    foreach (var kv in freq)
+        pq.Enqueue((kv.Key, kv.Value), kv.Value);
+
+    var result = new StringBuilder();
+    (char prevChar, int prevFreq) = ('#', 0);
+
+    while (pq.Count > 0)
+    {
+        var (ch, f) = pq.Dequeue();
+        result.Append(ch);
+        if (prevFreq > 0)
+            pq.Enqueue((prevChar, prevFreq), prevFreq);
+
+        prevChar = ch;
+        prevFreq = f - 1;
+    }
+
+    return result.Length == s.Length ? result.ToString() : "";
+}
+Input: "aab"
+Output: "aba"
+
+
+37) Maximum Points You Can Obtain from Cards
+Problem: You have an array cardPoints and can pick k cards from either the start or the end. Find the maximum sum you can get.
+
+Approach: Instead of choosing k from ends, remove a window of size n-k (middle portion) with minimum sum.
+
+Max score = Total sum - min sum of middle window.
+
+Code (C#):
+public int MaxScore(int[] cardPoints, int k)
+{
+    int total = cardPoints.Sum();
+    int windowSize = cardPoints.Length - k;
+    int minWindowSum = cardPoints.Take(windowSize).Sum();
+    int currentSum = minWindowSum;
+
+    for (int i = windowSize; i < cardPoints.Length; i++)
+    {
+        currentSum += cardPoints[i] - cardPoints[i - windowSize];
+        minWindowSum = Math.Min(minWindowSum, currentSum);
+    }
+
+    return total - minWindowSum;
+}
+Input: [1,2,3,4,5,6,1], k = 3
+Output: 12
+
+38) Wiggle Sort
+Problem: Given an unsorted array nums, reorder it to form a wiggle sequence: nums[0] < nums[1] > nums[2] < nums[3]...
+
+Approach: Sort the array.
+
+Split into two halves and interleave from end of both halves.
+
+Code (C#):
+
+public void WiggleSort(int[] nums)
+{
+    int[] sorted = (int[])nums.Clone();
+    Array.Sort(sorted);
+
+    int n = nums.Length;
+    int mid = (n + 1) / 2;
+    int j = mid - 1, k = n - 1;
+
+    for (int i = 0; i < n; i++)
+    {
+        nums[i] = (i % 2 == 0) ? sorted[j--] : sorted[k--];
+    }
+}
+Input: [1,5,1,1,6,4]
+Output: [1,6,1,5,1,4] or similar valid wiggle arrangement
+
+39) Sort Colors (Dutch National Flag Problem)
+Problem: Given an array with values 0, 1, 2, sort it in-place (no built-in sort).
+
+Approach:Use three pointers: low, mid, high.
+
+Swap 0s to front, 2s to back.
+
+Code (C#):
+
+public void SortColors(int[] nums)
+{
+    int low = 0, mid = 0, high = nums.Length - 1;
+
+    while (mid <= high)
+    {
+        if (nums[mid] == 0)
+            (nums[low++], nums[mid++]) = (nums[mid], nums[low]);
+        else if (nums[mid] == 1)
+            mid++;
+        else
+            (nums[mid], nums[high--]) = (nums[high], nums[mid]);
+    }
+}
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+40) Minimum Swaps to Make Strings Equal
+Problem: Given two strings s1 and s2 of equal length consisting only of 'x' and 'y'. In one swap, you can swap any character of s1 with any character of s2. Return the minimum swaps needed to make the strings equal.
+
+Approach: Count number of x-y and y-x mismatches.
+
+Two xy or two yx mismatches = 1 swap each.
+
+One xy and one yx = 2 swaps.
+
+Code (C#):
+
+public int MinimumSwap(string s1, string s2)
+{
+    int xy = 0, yx = 0;
+    for (int i = 0; i < s1.Length; i++)
+    {
+        if (s1[i] == 'x' && s2[i] == 'y') xy++;
+        else if (s1[i] == 'y' && s2[i] == 'x') yx++;
+    }
+
+    if ((xy + yx) % 2 != 0) return -1;
+    return xy / 2 + yx / 2 + (xy % 2) * 2;
+}
+
+Input: "xx", "yy"
+Output: 1
