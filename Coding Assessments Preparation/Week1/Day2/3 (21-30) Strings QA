@@ -1,0 +1,591 @@
+21. Minimum Number of Bracket Reversals to Balance an Expression
+
+🔹 Problem: Given an expression with only { and }, find the minimum number of bracket reversals required to make it balanced.
+
+🧠 Logic: If the length of the string is odd, it's impossible to balance.
+Traverse and use a stack to count unbalanced { and }.
+Formula: ceil(unbalanced_left/2) + ceil(unbalanced_right/2)
+
+✅ Input:
+"{{{{}}"
+
+✅ Output: 1
+
+💻 C# Code:
+
+int MinReversals(string expr)
+{
+    int len = expr.Length;
+    if (len % 2 != 0) return -1; // Odd length cannot be balanced
+
+    Stack<char> stack = new Stack<char>();
+
+    foreach (char ch in expr)
+    {
+        if (ch == '{') stack.Push(ch);
+        else
+        {
+            if (stack.Count > 0 && stack.Peek() == '{') stack.Pop();
+            else stack.Push(ch);
+        }
+    }
+
+    int open = 0, close = 0;
+    while (stack.Count > 0)
+    {
+        if (stack.Pop() == '{') open++;
+        else close++;
+    }
+
+    return (open + 1) / 2 + (close + 1) / 2;
+}
+
+22. Count All Palindromic Subsequences in a String
+
+🔹 Problem: Find total palindromic subsequences in the string using DP.
+
+✅ Input: "aaa"
+✅ Output: 6  (a, a, a, aa, aa, aaa)
+
+💻 C# Code:
+
+int CountPalindromicSubseq(string s)
+{
+    int n = s.Length;
+    int[,] dp = new int[n, n];
+
+    for (int g = 0; g < n; g++)
+    {
+        for (int i = 0, j = g; j < n; i++, j++)
+        {
+            if (g == 0) dp[i, j] = 1;
+            else if (s[i] == s[j])
+                dp[i, j] = dp[i + 1, j] + dp[i, j - 1] + 1;
+            else
+                dp[i, j] = dp[i + 1, j] + dp[i, j - 1] - dp[i + 1, j - 1];
+        }
+    }
+
+    return dp[0, n - 1];
+}
+
+23. Count of Given String in 2D Character Array
+
+🔹 Problem: Find how many times a word appears in a 2D grid in 4 directions.
+
+✅ Input: 
+Grid = {
+    {'a','b','c'},
+    {'d','a','b'},
+    {'e','d','a'}
+}
+
+Word = "aba"
+
+✅ Output: 2
+
+💻 C# Code:
+
+int[] dx = { 0, 0, 1, -1 };
+int[] dy = { 1, -1, 0, 0 };
+
+int DFS(char[,] grid, int x, int y, string word, int idx)
+{
+    if (idx == word.Length) return 1;
+    if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
+        return 0;
+    if (grid[x, y] != word[idx]) return 0;
+
+    char temp = grid[x, y];
+    grid[x, y] = '#'; // visited
+    int count = 0;
+
+    for (int d = 0; d < 4; d++)
+        count += DFS(grid, x + dx[d], y + dy[d], word, idx + 1);
+
+    grid[x, y] = temp;
+    return count;
+}
+
+int CountStringInGrid(char[,] grid, string word)
+{
+    int count = 0;
+    for (int i = 0; i < grid.GetLength(0); i++)
+        for (int j = 0; j < grid.GetLength(1); j++)
+            count += DFS(grid, i, j, word, 0);
+
+    return count;
+}
+
+
+24. Search Word in 2D Grid of Characters
+
+🔹 Problem: You are given a 2D grid of characters and a target word. Your task is to check whether the word exists in the grid in any of the 8 possible directions from any starting cell.
+
+🔁 Directions to Move (8 total):
+Up: (-1, 0)
+Down: (1, 0)
+Left: (0, -1)
+Right: (0, 1)
+Top-left: (-1, -1)
+Top-right: (-1, 1)
+Bottom-left: (1, -1)
+Bottom-right: (1, 1)
+
+📥 Input:
+char[,] grid = {
+    { 'G', 'E', 'E', 'K', 'S' },
+    { 'F', 'O', 'R', 'G', 'E' },
+    { 'E', 'E', 'K', 'S', 'Q' }
+};
+
+string word = "GEEKS";
+
+📤 Output:
+Word Found at (0,0)
+Word Found at (1,3)
+
+🧠 Explanation:
+Start from every cell in the grid and try to match the word in all 8 directions. If found, print the starting coordinate.
+
+💻 C# Code:
+
+using System;
+
+class WordSearch2DGrid
+{
+    static int[] dx = { -1, -1, -1, 0, 0, 1, 1, 1 };
+    static int[] dy = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+    static bool SearchFrom(char[,] grid, int row, int col, string word)
+    {
+        int R = grid.GetLength(0);
+        int C = grid.GetLength(1);
+        int len = word.Length;
+
+        // Try all 8 directions
+        for (int dir = 0; dir < 8; dir++)
+        {
+            int k, newRow = row, newCol = col;
+
+            for (k = 0; k < len; k++)
+            {
+                // Boundary check
+                if (newRow < 0 || newRow >= R || newCol < 0 || newCol >= C)
+                    break;
+
+                if (grid[newRow, newCol] != word[k])
+                    break;
+
+                // Move in direction
+                newRow += dx[dir];
+                newCol += dy[dir];
+            }
+
+            if (k == len)
+                return true; // Word matched in this direction
+        }
+
+        return false;
+    }
+
+    static void PatternSearch(char[,] grid, string word)
+    {
+        int R = grid.GetLength(0);
+        int C = grid.GetLength(1);
+
+        for (int i = 0; i < R; i++)
+        {
+            for (int j = 0; j < C; j++)
+            {
+                if (SearchFrom(grid, i, j, word))
+                {
+                    Console.WriteLine($"Word Found at ({i},{j})");
+                }
+            }
+        }
+    }
+
+    // 🔽 Main Method
+    static void Main()
+    {
+        char[,] grid = {
+            { 'G', 'E', 'E', 'K', 'S' },
+            { 'F', 'O', 'R', 'G', 'E' },
+            { 'E', 'E', 'K', 'S', 'Q' }
+        };
+
+        string word = "GEEKS";
+        PatternSearch(grid, word);
+    }
+}
+
+📝 Sample Output:
+Word Found at (0,0)
+Word Found at (1,3)
+
+
+25. Boyer-Moore Algorithm (Pattern Searching)
+
+🔹 Problem Statement:
+You are given a text and a pattern. Your task is to efficiently find all occurrences of the pattern in the text using the Boyer-Moore algorithm, focusing on the bad character heuristic.
+
+💡 Key Idea:
+Instead of checking every character, Boyer-Moore skips sections of the text using preprocessed knowledge. The bad character rule says:
+If a mismatch occurs, shift the pattern so the mismatched character in the text aligns with its last occurrence in the pattern, or shift beyond it if it’s not in the pattern.
+
+📥 Input:
+Text    = "ABAAABCD"
+Pattern = "ABC"
+
+📤 Output:
+Pattern found at index 4
+
+🧠 Explanation:
+Compare pattern from right to left.
+
+If a mismatch occurs, use the bad character table to determine how many characters to shift.
+
+📘 Steps:
+Preprocess the pattern to create a bad character table.
+Scan the text using the pattern from right to left.
+On mismatch, use table to skip ahead in the text.
+
+💻 C# Code (with comments):
+using System;
+class BoyerMooreBadChar
+{
+    static int NO_OF_CHARS = 256;
+
+    // Build the bad character table
+    static void BadCharHeuristic(string pattern, int[] badChar)
+    {
+        for (int i = 0; i < NO_OF_CHARS; i++)
+            badChar[i] = -1;
+
+        for (int i = 0; i < pattern.Length; i++)
+            badChar[(int)pattern[i]] = i;  // Last occurrence
+    }
+
+    static void Search(string text, string pattern)
+    {
+        int m = pattern.Length;
+        int n = text.Length;
+
+        int[] badChar = new int[NO_OF_CHARS];
+        BadCharHeuristic(pattern, badChar);
+
+        int shift = 0;
+
+        while (shift <= (n - m))
+        {
+            int j = m - 1;
+
+            // Keep reducing index j while characters match
+            while (j >= 0 && pattern[j] == text[shift + j])
+                j--;
+
+            if (j < 0)
+            {
+                Console.WriteLine($"Pattern found at index {shift}");
+
+                // Shift the pattern to align with next character in text
+                shift += (shift + m < n) ? m - badChar[text[shift + m]] : 1;
+            }
+            else
+            {
+                // Shift the pattern so badChar aligns with mismatch char
+                shift += Math.Max(1, j - badChar[text[shift + j]]);
+            }
+        }
+    }
+
+    // 🔽 Main Method
+    static void Main()
+    {
+        string text = "ABAAABCD";
+        string pattern = "ABC";
+
+        Search(text, pattern);
+    }
+}
+
+📝 Output:
+Pattern found at index 4
+
+🔍 Time Complexity:
+Best/Average: O(n/m) (due to jumps)
+Worst: O(n * m) in bad cases (rare)
+
+
+26. Convert Roman Numerals to Decimal
+
+✅ Input: "IX"
+
+✅ Output:9
+
+💻 Logic:
+
+int RomanToInt(string s)
+{
+    Dictionary<char, int> map = new() {
+        ['I'] = 1, ['V'] = 5, ['X'] = 10, ['L'] = 50,
+        ['C'] = 100, ['D'] = 500, ['M'] = 1000
+    };
+
+    int total = 0;
+    for (int i = 0; i < s.Length; i++)
+    {
+        if (i + 1 < s.Length && map[s[i]] < map[s[i + 1]])
+            total -= map[s[i]];
+        else
+            total += map[s[i]];
+    }
+    return total;
+}
+
+
+27. Longest Common Prefix
+
+### 🔹 Problem Statement:
+
+Given an array of strings, find the **longest common prefix** (LCP) among them.
+If there is no common prefix, return an empty string `""`.
+
+
+### 📥 Input: { "flower", "flow", "flight" }
+
+### 📤 Output: "fl"
+
+
+### 💡 Logic – **Vertical Scanning**:
+
+1. Assume the **first word** is the base for comparison.
+2. Compare each character **column-wise** across all strings.
+3. Stop at the first mismatch or end of any string.
+
+
+### 🧠 Step-by-Step Example:
+
+* Compare column 0: `'f'` = `'f'` = `'f'` ✅
+* Compare column 1: `'l'` = `'l'` = `'l'` ✅
+* Compare column 2: `'o'` ≠ `'i'` ❌ → stop
+
+Answer = `"fl"`
+
+### 💻 C# Code (with comments):
+
+using System;
+
+class LongestCommonPrefix
+{
+    public static string FindLCP(string[] strs)
+    {
+        if (strs == null || strs.Length == 0)
+            return "";
+
+        for (int i = 0; i < strs[0].Length; i++)
+        {
+            char c = strs[0][i];
+
+            for (int j = 1; j < strs.Length; j++)
+            {
+                // If index is out of bounds or character doesn't match
+                if (i >= strs[j].Length || strs[j][i] != c)
+                    return strs[0].Substring(0, i);
+            }
+        }
+
+        // All characters of the first string matched
+        return strs[0];
+    }
+
+    static void Main()
+    {
+        string[] words = { "flower", "flow", "flight" };
+        string result = FindLCP(words);
+        Console.WriteLine("Longest Common Prefix: " + result);
+    }
+}
+
+### 📝 Output:
+
+Longest Common Prefix: fl
+
+### 🔄 Time Complexity:
+
+* **O(N \* M)** where:
+
+  * `N` = number of strings
+  * `M` = length of the shortest string
+
+
+28. Number of Flips to Make Binary String Alternate
+
+🔹 Problem Statement: Given a binary string (containing only '0' and '1'), find the minimum number of flips required to make it alternate, i.e., no two adjacent characters are the same.
+
+📥 Input: "0001010111"
+📤 Output:2
+
+💡 Logic:
+We compare the string against two ideal alternate patterns:
+Starting with '0': "010101..."
+Starting with '1': "101010..."
+
+For each character:
+
+Count mismatches with both patterns.
+
+The answer is the minimum of the two counts.
+
+🧠 Step-by-Step Example: "0001010111"
+
+Ideal Patterns:
+
+Pattern 1 (0101010101):
+Compare with 0001010111 → mismatch at positions: 0, 1 → 2 flips
+
+Pattern 2 (1010101010):
+Compare with 0001010111 → mismatches at: 0,1,2,5,8,9 → 6 flips
+
+✅ Minimum flips = 2
+
+💻 C# Code (with comments):
+
+using System;
+
+class AlternateBinaryFlips
+{
+    public static int MinFlipsToAlternate(string s)
+    {
+        int flipCount1 = 0; // for pattern starting with '0'
+        int flipCount2 = 0; // for pattern starting with '1'
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            // Expected chars in both alternating patterns
+            char expectedChar1 = (i % 2 == 0) ? '0' : '1';
+            char expectedChar2 = (i % 2 == 0) ? '1' : '0';
+
+            if (s[i] != expectedChar1) flipCount1++;
+            if (s[i] != expectedChar2) flipCount2++;
+        }
+
+        return Math.Min(flipCount1, flipCount2);
+    }
+
+    static void Main()
+    {
+        string input = "0001010111";
+        int result = MinFlipsToAlternate(input);
+        Console.WriteLine("Minimum flips required: " + result);
+    }
+}
+
+
+📝 Output:
+Minimum flips required: 2
+
+🧮 Time & Space Complexity:
+Time: O(n)
+Space: O(1)
+
+
+
+29. First Repeated Word in a String
+
+✅ Input: "he had had he"
+✅ Output: "had"
+
+💻 Code:
+string FirstRepeatedWord(string sentence)
+{
+    var set = new HashSet<string>();
+    var words = sentence.Split(' ');
+    foreach (var word in words)
+    {
+        if (set.Contains(word))
+            return word;
+        set.Add(word);
+    }
+    return null;
+}
+
+30. Minimum Number of Swaps for Bracket Balancing
+
+🔹 Problem Statement:
+You're given a string containing only opening ([) and closing (]) brackets. Find the minimum number of swaps required to balance the string.
+
+📥 Input: "]]][[["
+📤 Output: 2
+
+💡 Logic: A string is balanced if every [ has a corresponding ] and the order is proper.
+
+We track: imbalance: the number of unmatched ] brackets.
+
+When we find [, and imbalance > 0, it means a swap is needed to balance with a previous unmatched ].
+
+Each such instance requires 1 swap, and we reduce imbalance by 1.
+
+🧠 Step-by-Step Walkthrough:
+Input: "]]][[["
+
+] → imbalance = 1
+
+] → imbalance = 2
+
+] → imbalance = 3
+
+[ → imbalance = 2 → swap needed → swaps = 1
+
+[ → imbalance = 1 → swap needed → swaps = 2
+
+[ → imbalance = 0 → no swap
+
+✅ Total swaps = 2
+
+
+💻 C# Code with Comments:
+
+using System;
+
+class MinBracketSwaps
+{
+    public static int MinimumSwaps(string s)
+    {
+        int imbalance = 0;  // Tracks unmatched closing brackets
+        int swaps = 0;      // Number of swaps needed
+
+        foreach (char ch in s)
+        {
+            if (ch == '[')
+            {
+                // Found an opening bracket, balance if imbalance exists
+                if (imbalance > 0)
+                {
+                    swaps += 1;
+                    imbalance -= 1; // One closing bracket balanced
+                }
+            }
+            else
+            {
+                // Found a closing bracket
+                imbalance += 1;
+            }
+        }
+
+        return swaps;
+    }
+
+    static void Main()
+    {
+        string input = "]]][[[";
+        Console.WriteLine("Minimum Swaps Required: " + MinimumSwaps(input));
+    }
+}
+
+📝 Output:Minimum Swaps Required: 2
+
+⏱ Time & Space Complexity:
+Time: O(n)
+Space: O(1)
