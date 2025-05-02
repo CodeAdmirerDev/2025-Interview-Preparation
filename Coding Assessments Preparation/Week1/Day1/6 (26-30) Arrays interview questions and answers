@@ -1,169 +1,141 @@
-26) Find Whether One Array is Subset of Another Array
-Explanation: Use a dictionary (frequency map) to check if all elements of subset exist in larger array.
+26) Find Whether an Array is a Subset of Another Array
+Problem: Given two arrays: arr1 (main) and arr2 (subset candidate), check if all elements of arr2 are present in arr1.
 
-using System;  
-using System.Collections.Generic;  
+Approach: Use a HashSet for fast lookup.
 
-class Program {  
-    static bool IsSubset(int[] arr1, int[] arr2) {  
-        Dictionary<int, int> freq = new Dictionary<int, int>();  
-        
-        foreach (int num in arr1)  
-            freq[num] = freq.GetValueOrDefault(num, 0) + 1;  
-        
-        foreach (int num in arr2) {  
-            if (!freq.ContainsKey(num) || freq[num] == 0)  
-                return false;  
-            freq[num]--;  
-        }  
-        return true;  
-    }  
+Code (C#):
+public bool IsSubset(int[] arr1, int[] arr2)
+{
+    var set = new HashSet<int>(arr1);
+    foreach (var item in arr2)
+    {
+        if (!set.Contains(item))
+            return false;
+    }
+    return true;
+}
 
-    static void Main() {  
-        int[] arr1 = {11, 1, 13, 21, 3, 7};  
-        int[] arr2 = {11, 3, 7, 1};  
-        Console.WriteLine("Is subset? " + IsSubset(arr1, arr2));  
-    }  
-}  
-Input:
-arr1 = [11, 1, 13, 21, 3, 7],
-arr2 = [11, 3, 7, 1]
+Input: arr1 = [1, 2, 3, 4, 5], arr2 = [2, 4]
+Output: True
 
-Output:
-Is subset? True  
 
-27) Find Triplet That Sum to a Given Value
+27) Find the Triplet That Sums to a Given Value
 
-Explanation: Fix one element, use two pointers to find if pair with required sum exists.
+Problem: Given an array and a number X, find whether any triplet in the array sums to X.
 
-using System;  
-class Program {  
-    static bool FindTriplet(int[] arr, int sum) {  
-        Array.Sort(arr);  
-        for (int i = 0; i < arr.Length - 2; i++) {  
-            int left = i + 1, right = arr.Length - 1;  
-            while (left < right) {  
-                int currentSum = arr[i] + arr[left] + arr[right];  
-                if (currentSum == sum) return true;  
-                else if (currentSum < sum) left++;  
-                else right--;  
-            }  
-        }  
-        return false;  
-    }  
+Approach: Sort the array.
 
-    static void Main() {  
-        int[] arr = {1, 4, 45, 6, 10, 8};  
-        int sum = 22;  
-        Console.WriteLine("Triplet with sum " + sum + " exists: " + FindTriplet(arr, sum));  
-    }  
-}  
+Fix one element and use two-pointer approach for the remaining.
 
-Input: [1, 4, 45, 6, 10, 8], sum = 22
-Output:
-Triplet with sum 22 exists: True 
+Code (C#):
+
+public bool FindTriplet(int[] arr, int sum)
+{
+    Array.Sort(arr);
+    for (int i = 0; i < arr.Length - 2; i++)
+    {
+        int l = i + 1, r = arr.Length - 1;
+        while (l < r)
+        {
+            int currSum = arr[i] + arr[l] + arr[r];
+            if (currSum == sum)
+                return true;
+            else if (currSum < sum)
+                l++;
+            else
+                r--;
+        }
+    }
+    return false;
+}
+
+Input: [12, 3, 4, 1, 6, 9], sum = 24
+Output: True (e.g., 12 + 3 + 9)
 
 28) Trapping Rain Water Problem
-Explanation:
-Calculate how much water can be trapped between bars representing heights.
-Use two arrays: leftMax[] and rightMax[] for max height to left & right.
-Water trapped on ith bar = min(leftMax[i], rightMax[i]) - height[i].
 
-csharp
-using System;  
+Problem: Given an array representing heights of bars, compute how much water it can trap after raining.
 
-class Program {  
-    static int Trap(int[] height) {  
-        int n = height.Length;  
-        if (n == 0) return 0;  
+Approach: Precompute leftMax[i] and rightMax[i] for each position.
+Water trapped at i = min(leftMax[i], rightMax[i]) - height[i]
 
-        int[] leftMax = new int[n];  
-        int[] rightMax = new int[n];  
-        leftMax[0] = height[0];  
-        for (int i = 1; i < n; i++)  
-            leftMax[i] = Math.Max(leftMax[i - 1], height[i]);  
+Code (C#):
 
-        rightMax[n - 1] = height[n - 1];  
-        for (int i = n - 2; i >= 0; i--)  
-            rightMax[i] = Math.Max(rightMax[i + 1], height[i]);  
+public int TrapRainWater(int[] height)
+{
+    int n = height.Length;
+    if (n == 0) return 0;
 
-        int trappedWater = 0;  
-        for (int i = 0; i < n; i++)  
-            trappedWater += Math.Min(leftMax[i], rightMax[i]) - height[i];  
+    int[] leftMax = new int[n];
+    int[] rightMax = new int[n];
 
-        return trappedWater;  
-    }  
+    leftMax[0] = height[0];
+    for (int i = 1; i < n; i++)
+        leftMax[i] = Math.Max(leftMax[i - 1], height[i]);
 
-    static void Main() {  
-        int[] height = {0,1,0,2,1,0,1,3,2,1,2,1};  
-        Console.WriteLine("Trapped water: " + Trap(height));  
-    }  
-}  
+    rightMax[n - 1] = height[n - 1];
+    for (int i = n - 2; i >= 0; i--)
+        rightMax[i] = Math.Max(rightMax[i + 1], height[i]);
+
+    int water = 0;
+    for (int i = 0; i < n; i++)
+        water += Math.Min(leftMax[i], rightMax[i]) - height[i];
+
+    return water;
+}
+
 Input: [0,1,0,2,1,0,1,3,2,1,2,1]
-Output:
-Trapped water: 6  
+Output: 6
 
-29) Find Majority Element in an Array
+29) Chocolate Distribution Problem
+Problem: Given an array of packet sizes and m students, distribute packets such that the difference between max and min chocolates given is minimum.
 
-Explanation: Use Boyer-Moore Voting algorithm to find element that appears more than n/2 times.
+Approach: Sort array and find the minimum difference in any window of size m.
 
-using System;  
+Code (C#):
 
-class Program {  
-    static int FindMajorityElement(int[] nums) {  
-        int count = 0, candidate = 0;  
-        foreach (int num in nums) {  
-            if (count == 0) candidate = num;  
-            count += (num == candidate) ? 1 : -1;  
-        }  
-        // Verify candidate  
-        count = 0;  
-        foreach (int num in nums)  
-            if (num == candidate) count++;  
-        return (count > nums.Length / 2) ? candidate : -1; // -1 if no majority  
-    }  
+public int MinChocolateDifference(int[] packets, int m)
+{
+    if (packets.Length < m) return -1;
+    Array.Sort(packets);
 
-    static void Main() {  
-        int[] arr = {2, 2, 1, 1, 1, 2, 2};  
-        int maj = FindMajorityElement(arr);  
-        Console.WriteLine((maj != -1) ? $"Majority element is {maj}" : "No majority element");  
-    }  
-}  
+    int minDiff = int.MaxValue;
+    for (int i = 0; i + m - 1 < packets.Length; i++)
+    {
+        int diff = packets[i + m - 1] - packets[i];
+        minDiff = Math.Min(minDiff, diff);
+    }
 
-Input: [2, 2, 1, 1, 1, 2, 2]
-Output:Majority element is 2  
+    return minDiff;
+}
+Input: [7, 3, 2, 4, 9, 12, 56], m = 3
+Output: 2 (Choose packets [2, 3, 4])
 
-30) Maximum Size Subarray Sum Equals k
+30) Smallest Subarray with Sum Greater Than a Given Value
+Problem: Given an array and value x, find the smallest length of a contiguous subarray with sum > x.
 
-Explanation:Find max length of subarray with sum == k using prefix sums and hashmap.
+Approach: Use sliding window technique.
 
-using System;  
-using System.Collections.Generic;  
+Code (C#):
 
-class Program {  
-    static int MaxSubArrayLen(int[] nums, int k) {  
-        Dictionary<int, int> sumIndex = new Dictionary<int, int>();  
-        int sum = 0, maxLen = 0;  
+public int SmallestSubarray(int[] arr, int x)
+{
+    int n = arr.Length, sum = 0, minLen = n + 1;
+    int start = 0, end = 0;
 
-        for (int i = 0; i < nums.Length; i++) {  
-            sum += nums[i];  
-            if (sum == k) maxLen = i + 1;  
+    while (end < n)
+    {
+        while (sum <= x && end < n)
+            sum += arr[end++];
 
-            if (!sumIndex.ContainsKey(sum))  
-                sumIndex[sum] = i;  
+        while (sum > x && start < n)
+        {
+            minLen = Math.Min(minLen, end - start);
+            sum -= arr[start++];
+        }
+    }
 
-            if (sumIndex.ContainsKey(sum - k))  
-                maxLen = Math.Max(maxLen, i - sumIndex[sum - k]);  
-        }  
-        return maxLen;  
-    }  
-
-    static void Main() {  
-        int[] nums = {1, -1, 5, -2, 3};  
-        int k = 3;  
-        Console.WriteLine("Max length of subarray summing to k: " + MaxSubArrayLen(nums, k));  
-    }  
-}  
-
-Input: [1, -1, 5, -2, 3], k = 3
-Output:Max length of subarray summing to k: 4  
+    return minLen == n + 1 ? 0 : minLen;
+}
+Input: [1, 4, 45, 6, 0, 19], x = 51
+Output: 3 (subarray is [4, 45, 6])
