@@ -1,5 +1,35 @@
 Day 2 – Strings: Reversal, Palindromes, Anagrams
 
+🔰 Understanding Strings in DSA
+A string is a sequence of characters. In C#, it is an immutable object, meaning once created, its content cannot be changed. Operations like reversal, character comparison, or rearrangement result in new string instances.
+
+🧠 How to Approach String Problems
+Before writing code, follow these steps:
+
+✅ Step 1: Read the Problem Carefully
+What is the input?
+What is the expected output?
+Are there any constraints (e.g., only lowercase letters, no special characters)?
+Is it case-sensitive?
+
+✅ Step 2: Classify the Problem
+Reversal: Output in reverse order.
+Palindrome: Check if reading left-to-right is the same as right-to-left.
+Anagram: Are two strings made from the same letters?
+
+✅ Step 3: Use Examples
+Always work through 1–2 examples by hand before writing code. This helps catch edge cases.
+
+✅ Step 4: Plan Your Logic
+Do you need a stack, a dictionary, two-pointer approach, or just a simple loop?
+Can you solve it with a built-in function, or do you need to build the logic yourself?
+
+✅ Step 5: Analyze Time & Space
+Ask:
+Can I solve it in O(n) or O(n log n)?
+Am I using extra space (like a dictionary, array)?
+
+
 ### 🔤 **Advanced String Problems with S.No**
 
 1. Reverse a String
