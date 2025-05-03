@@ -1,6 +1,151 @@
 Day 1 – Arrays: Basics, Prefix Sum
 
-Using the c# will try to solve the below array problems:
+🔰 Understanding Arrays in DSA
+An array is a collection of elements stored in contiguous memory locations, accessed using an index.
+It's one of the most fundamental and frequently used data structures in coding interviews.
+
+In C#, an array is declared as:
+
+int[] arr = new int[5]; // or
+int[] arr = { 1, 2, 3, 4, 5 };
+
+🧠 How to Approach Array Problems
+
+✅ Step 1: Understand the Problem Clearly
+What is the input format? (1D array, 2D matrix, etc.)
+What is the expected output?
+Are there constraints (e.g., array size, range of elements)?
+
+✅ Step 2: Work Through Small Examples
+Before coding, take pen and paper and try:
+Dry run the logic with a small array.
+Write down intermediate calculations like sums or indexes.
+
+✅ Step 3: Choose the Right Approach
+Do you need to loop once? (O(n))
+Do you need nested loops? (O(n²))
+Is there an optimized way using prefix sum, hashing, or two-pointers?
+
+🔍 Day 1 Topics Overview
+📌 1. Basics of Arrays
+Start with:
+Accessing elements using indices.
+Modifying elements.
+Traversing with loops (for, foreach).
+Finding min, max, sum, average.
+
+🧠 Example Problems:
+Find the maximum in an array.
+Reverse an array.
+Count frequency of each element.
+
+🔢 Time & Space Analysis:
+Most basic operations: O(n) time.
+No extra space unless creating new structures.
+
+📌 2. Prefix Sum
+A prefix sum is a powerful technique to preprocess an array for fast range sum queries.
+
+🎯 Use Case:
+Given arr = [2, 4, 6, 1, 3], find sum from index 1 to 3.
+Instead of summing 4 + 6 + 1 every time, use:
+prefix[i] = prefix[i-1] + arr[i];
+Then, sum(1,3) = prefix[3] - prefix[0]
+
+✅ Prefix Sum Steps:
+Create a prefix array: prefix[0] = arr[0]
+
+For i from 1 to n-1:
+prefix[i] = prefix[i-1] + arr[i]
+
+To get sum from index l to r:
+sum = prefix[r] - prefix[l - 1]
+
+⚡ Efficiency:
+Preprocessing: O(n)
+Range query: O(1)
+This is a big improvement from O(n) per query.
+
+
+Understanding Big O notation like O(n) is crucial for learning Data Structures and Algorithms (DSA). 
+It’s how we measure the efficiency of a program — especially how well it performs as the input size increases.
+
+Let me break it down in simple terms:
+
+🚀 What is Big O Notation?
+Big O notation describes the time or space complexity of an algorithm — in other words:
+
+How fast (or slow) does your code run as the input gets bigger?
+
+📦 Real-Life Analogy
+Imagine you're reading names from a list of 1,000 people to find one person.
+Linear Search (O(n)): You go one-by-one until you find it. Worst case? You read all 1,000 names.
+Binary Search (O(log n)): You cut the list in half each time. Much faster!
+
+🧠 Common Time Complexities (from fast to slow):
+Big O            	Meaning                            	    Example
+O(1)	          Constant time – same always	              Accessing arr[5]
+O(log n)	      Logarithmic – cuts in half each time	    Binary Search
+O(n)	          Linear – grows with input	                Looping once through array
+O(n log n)    	Linearithmic – sorting	                  Merge Sort, Quick Sort
+O(n²)	          Quadratic – nested loops                	Comparing all pairs in array
+O(2^n)	        Exponential – terrible for large n	      Recursive brute-force algorithms
+
+🧮 Prefix Sum Efficiency Example
+Let’s say you are asked:
+
+"Given this array, find the sum from index l to r, many times."
+❌ Without Prefix Sum (Brute Force):
+
+Each time:
+int sum = 0;
+for (int i = l; i <= r; i++) {
+    sum += arr[i];
+}
+
+🕒 Time Complexity: O(n) — you loop every time!
+
+✅ With Prefix Sum:
+You do this once:
+
+prefix[0] = arr[0];
+for (int i = 1; i < arr.Length; i++) {
+    prefix[i] = prefix[i - 1] + arr[i];
+}
+
+Then for any range l to r:
+
+int sum = prefix[r] - (l > 0 ? prefix[l - 1] : 0);
+🕒 Now, each query is done in O(1) time!
+Even 1 million queries will be super fast ⚡
+
+📘 How to Learn Big O Step-by-Step
+Start with simple loops
+for, while — count how many times it runs.
+Practice common patterns
+Nested loops → O(n²)
+Divide and Conquer → O(log n) or O(n log n)
+Use visualization
+Websites like Visualgo and Big O Cheat Sheet help a lot.
+
+Ask yourself during coding:
+“If the array has 1 million items, will my solution work fast?”
+
+⚙️ Common Mistakes to Avoid
+Forgetting 0-based indexing.
+Using prefix sum incorrectly at boundaries (l = 0).
+Off-by-one errors.
+
+✅ How to Analyze Array Problems
+Question to Ask	Example
+What's the size of the input?	Small = brute force OK; Large = optimize
+Are there repeated queries?	Use prefix sum or precomputation
+Is order important?	Sorting or reverse traversal?
+Are there nested iterations?	Try to reduce time from O(n²) to O(n)
+
+
+
+Below are the most asked interview questions on Arrays :
 
 1) Reverse the array
 2) Find the "Kth" max and min element of an array
