@@ -1,0 +1,700 @@
+✅ Problem #31: Find the Longest Common Subsequence (LCS) Between Two Strings
+
+📘 Problem Statement:
+Given two strings s1 and s2, find the length of their Longest Common Subsequence (LCS).
+A subsequence is a sequence that appears in the same relative order but not necessarily contiguous.
+
+🧠 Explanation: Unlike substring, subsequence allows skipping characters.
+
+Example:
+s1 = "abcde", s2 = "ace"
+LCS = "ace", length = 3
+
+🔢 Input:
+string s1 = "AGGTAB";
+string s2 = "GXTXAYB";
+
+🎯 Output: 4
+
+✍️ Explanation:
+LCS is "GTAB", which has 4 characters.
+
+🪜 Step-by-Step Logic:
+Use Dynamic Programming to avoid recomputation.
+
+Create a 2D array dp[,] where dp[i,j] stores the LCS length of s1[0..i-1] and s2[0..j-1].
+
+If characters match, include it in LCS:
+dp[i,j] = 1 + dp[i-1,j-1]
+If not, take max of excluding one character:
+dp[i,j] = max(dp[i-1,j], dp[i,j-1])
+
+✅ C# Code with Comments:
+
+using System;
+class Program
+{
+    static int LongestCommonSubsequence(string s1, string s2)
+    {
+        int m = s1.Length;
+        int n = s2.Length;
+
+        // Create a 2D array to store results of subproblems
+        int[,] dp = new int[m + 1, n + 1];
+
+        // Fill dp table bottom-up
+        for (int i = 1; i <= m; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                if (s1[i - 1] == s2[j - 1])
+                {
+                    // Characters match, extend the subsequence
+                    dp[i, j] = 1 + dp[i - 1, j - 1];
+                }
+                else
+                {
+                    // No match, take max from left or top
+                    dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                }
+            }
+        }
+
+        // The bottom-right cell contains the result
+        return dp[m, n];
+    }
+
+    static void Main()
+    {
+        string s1 = "AGGTAB";
+        string s2 = "GXTXAYB";
+
+        int result = LongestCommonSubsequence(s1, s2);
+        Console.WriteLine("Length of LCS is: " + result);
+    }
+}
+
+🧪 Sample Output:
+Length of LCS is: 4
+
+
+✅ 32. Generate all possible valid IP addresses
+💡 Explanation:
+We need to place 3 dots in the string to split it into 4 parts, each a valid IP segment (0–255, no leading zeros).
+
+🔢 Input: "25525511135"
+🎯 Output:
+255.255.11.135  
+255.255.111.35
+
+🧠 Logic:
+Try all combinations of 3 dots.
+
+Ensure each part is valid: between 0-255, no leading zeros (except "0").
+
+🧾 C# Code:
+
+static List<string> RestoreIPAddresses(string s)
+{
+    List<string> result = new List<string>();
+    int n = s.Length;
+
+    for (int i = 1; i < 4 && i < n - 2; i++)
+    {
+        for (int j = i + 1; j < i + 4 && j < n - 1; j++)
+        {
+            for (int k = j + 1; k < j + 4 && k < n; k++)
+            {
+                string s1 = s.Substring(0, i);
+                string s2 = s.Substring(i, j - i);
+                string s3 = s.Substring(j, k - j);
+                string s4 = s.Substring(k);
+
+                if (IsValid(s1) && IsValid(s2) && IsValid(s3) && IsValid(s4))
+                    result.Add($"{s1}.{s2}.{s3}.{s4}");
+            }
+        }
+    }
+
+    return result;
+}
+
+static bool IsValid(string s)
+{
+    if (s.Length == 0 || s.Length > 3 || (s[0] == '0' && s.Length > 1))
+        return false;
+
+    int num = int.Parse(s);
+    return num >= 0 && num <= 255;
+}
+
+
+33. Smallest window that contains all characters of string itself
+🔹 Problem: Find the smallest substring which contains all unique characters of the original string.
+
+🔹 Input:
+s = "aabcbcdbca"
+
+🔹 Output:
+"dbca"
+
+🔹 Explanation:
+Unique characters: {'a','b','c','d'}
+Smallest window with all: "dbca"
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static string FindSmallestWindow(string str)
+    {
+        HashSet<char> uniqueChars = new HashSet<char>(str); // Step 1: Store unique characters
+        int required = uniqueChars.Count;
+
+        Dictionary<char, int> windowCounts = new Dictionary<char, int>();
+        int formed = 0, start = 0, minLen = int.MaxValue, minStart = 0;
+
+        for (int end = 0; end < str.Length; end++)
+        {
+            char c = str[end];
+            if (!windowCounts.ContainsKey(c))
+                windowCounts[c] = 0;
+            windowCounts[c]++;
+
+            if (windowCounts[c] == 1) // First time we see this char
+                formed++;
+
+            while (formed == required)
+            {
+                if (end - start + 1 < minLen)
+                {
+                    minLen = end - start + 1;
+                    minStart = start;
+                }
+
+                // Shrink window
+                char sc = str[start];
+                windowCounts[sc]--;
+                if (windowCounts[sc] == 0)
+                    formed--;
+                start++;
+            }
+        }
+
+        return minLen == int.MaxValue ? "" : str.Substring(minStart, minLen);
+    }
+
+    static void Main()
+    {
+        string input = "aabcbcdbca";
+        Console.WriteLine("Smallest window: " + FindSmallestWindow(input)); // Output: "dbca"
+    }
+}
+
+34. Rearrange characters in a string such that no two adjacent are same
+🔹 Input: s = "aaabc"
+
+🔹 Output: "abaca" or "acaba" (Any valid answer)
+
+🔹 Explanation: Try to arrange high-frequency characters so that they don't sit next to each other.
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+class Program
+{
+    public class KeyComparer : IComparer<(int freq, char ch)>
+    {
+        public int Compare((int freq, char ch) x, (int freq, char ch) y)
+        {
+            int cmp = y.freq.CompareTo(x.freq);
+            return cmp == 0 ? x.ch.CompareTo(y.ch) : cmp;
+        }
+    }
+
+    static string RearrangeString(string s)
+    {
+        Dictionary<char, int> freqMap = new Dictionary<char, int>();
+        foreach (char c in s)
+        {
+            if (!freqMap.ContainsKey(c)) freqMap[c] = 0;
+            freqMap[c]++;
+        }
+
+        SortedSet<(int, char)> maxHeap = new SortedSet<(int, char)>(new KeyComparer());
+        foreach (var kvp in freqMap)
+            maxHeap.Add((kvp.Value, kvp.Key));
+
+        string result = "";
+        (int, char)? prev = null;
+
+        while (maxHeap.Count > 0)
+        {
+            var current = maxHeap.Min;
+            maxHeap.Remove(current);
+            result += current.Item2;
+
+            if (prev != null && prev.Value.Item1 > 0)
+                maxHeap.Add(prev.Value);
+
+            prev = (current.Item1 - 1, current.Item2);
+        }
+
+        return result.Length == s.Length ? result : "Not possible";
+    }
+
+    static void Main()
+    {
+        string input = "aaabc";
+        Console.WriteLine("Rearranged: " + RearrangeString(input)); // Output: e.g., "abaca"
+    }
+}
+
+
+35. Minimum characters to be added at front to make string palindrome
+
+🔹 Input: s = "abc"
+🔹 Output: 2 (we add "cb" in front to make "cbabc")
+
+🔹 Explanation: We find the longest palindromic prefix and calculate characters to add.
+
+🔹 C# Code:
+
+using System;
+class Program
+{
+    static int MinCharsToMakePalindrome(string str)
+    {
+        string rev = new string(str.ToCharArray().Reverse().ToArray());
+        string concat = str + "$" + rev;
+
+        int[] lps = new int[concat.Length];
+        for (int i = 1, len = 0; i < concat.Length;)
+        {
+            if (concat[i] == concat[len])
+            {
+                lps[i++] = ++len;
+            }
+            else if (len != 0)
+            {
+                len = lps[len - 1];
+            }
+            else
+            {
+                lps[i++] = 0;
+            }
+        }
+
+        return str.Length - lps[concat.Length - 1];
+    }
+
+    static void Main()
+    {
+        string input = "abc";
+        Console.WriteLine("Min chars to add: " + MinCharsToMakePalindrome(input)); // Output: 2
+    }
+}
+
+36. Given a sequence of words, print all anagrams together
+
+🔹 Input: ["cat", "dog", "tac", "god", "act"]
+
+🔹 Output: Group1: ["cat", "tac", "act"]
+           Group2: ["dog", "god"]
+
+🔹 Explanation: Words with the same sorted characters are anagrams.
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+class Program
+{
+    static void GroupAnagrams(string[] words)
+    {
+        var map = new Dictionary<string, List<string>>();
+
+        foreach (var word in words)
+        {
+            char[] chars = word.ToCharArray();
+            Array.Sort(chars);
+            string key = new string(chars);
+
+            if (!map.ContainsKey(key))
+                map[key] = new List<string>();
+            map[key].Add(word);
+        }
+
+        int group = 1;
+        foreach (var entry in map)
+        {
+            Console.WriteLine($"Group{group++}: " + string.Join(", ", entry.Value));
+        }
+    }
+
+    static void Main()
+    {
+        string[] input = { "cat", "dog", "tac", "god", "act" };
+        GroupAnagrams(input);
+    }
+}
+
+37. Find the smallest window in a string containing all characters of another string
+
+🔹 Input: str = "ADOBECODEBANC", pattern = "ABC"
+
+🔹 Output: "BANC"
+
+🔹 Explanation: We use the sliding window technique to track all pattern characters with frequency.
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static string MinWindow(string s, string t)
+    {
+        if (string.IsNullOrEmpty(s) || string.IsNullOrEmpty(t)) return "";
+
+        Dictionary<char, int> tFreq = new Dictionary<char, int>();
+        foreach (char c in t)
+        {
+            if (!tFreq.ContainsKey(c)) tFreq[c] = 0;
+            tFreq[c]++;
+        }
+
+        int required = tFreq.Count;
+        int left = 0, right = 0, formed = 0;
+        Dictionary<char, int> windowCounts = new Dictionary<char, int>();
+        int[] ans = { -1, 0, 0 }; // length, start, end
+
+        while (right < s.Length)
+        {
+            char c = s[right];
+            if (!windowCounts.ContainsKey(c)) windowCounts[c] = 0;
+            windowCounts[c]++;
+
+            if (tFreq.ContainsKey(c) && windowCounts[c] == tFreq[c])
+                formed++;
+
+            while (left <= right && formed == required)
+            {
+                if (ans[0] == -1 || right - left + 1 < ans[0])
+                    ans = new int[] { right - left + 1, left, right };
+
+                char lc = s[left];
+                windowCounts[lc]--;
+                if (tFreq.ContainsKey(lc) && windowCounts[lc] < tFreq[lc])
+                    formed--;
+
+                left++;
+            }
+            right++;
+        }
+
+        return ans[0] == -1 ? "" : s.Substring(ans[1], ans[0]);
+    }
+
+    static void Main()
+    {
+        string s = "ADOBECODEBANC", t = "ABC";
+        Console.WriteLine("Smallest window: " + MinWindow(s, t)); // Output: "BANC"
+    }
+}
+
+
+38. Recursively remove all adjacent duplicates
+
+🔹 Input: "azxxzy"
+🔹 Output: "ay"
+
+🔹 Explanation:
+
+"xx" → removed → "azzy"
+"zz" → removed → "ay"
+
+🔹 C# Code:
+
+using System;
+class Program
+{
+    static string RemoveAdjacentDuplicates(string str)
+    {
+        if (str.Length <= 1) return str;
+
+        for (int i = 1; i < str.Length; i++)
+        {
+            if (str[i] == str[i - 1])
+            {
+                int start = i - 1;
+                while (i < str.Length && str[i] == str[start])
+                    i++;
+                return RemoveAdjacentDuplicates(str.Substring(0, start) + str.Substring(i));
+            }
+        }
+        return str;
+    }
+
+    static void Main()
+    {
+        string input = "azxxzy";
+        Console.WriteLine("Output: " + RemoveAdjacentDuplicates(input)); // Output: "ay"
+    }
+}
+
+
+39. String matching where one string contains wildcard characters
+
+🔹 Wildcard Rules:
+? matches any single character
+* matches any sequence (including empty)
+
+🔹 Input: wild = "g*ks", str = "geeks"
+🔹 Output: true
+
+🔹 Explanation: g*ks → * matches "ee" → valid match
+
+🔹 C# Code:
+
+using System;
+class Program
+{
+    static bool WildcardMatch(string wild, string str)
+    {
+        int w = 0, s = 0, star = -1, match = 0;
+
+        while (s < str.Length)
+        {
+            if (w < wild.Length && (wild[w] == '?' || wild[w] == str[s]))
+            {
+                w++; s++;
+            }
+            else if (w < wild.Length && wild[w] == '*')
+            {
+                star = w;
+                match = s;
+                w++;
+            }
+            else if (star != -1)
+            {
+                w = star + 1;
+                match++;
+                s = match;
+            }
+            else return false;
+        }
+
+        while (w < wild.Length && wild[w] == '*') w++;
+        return w == wild.Length;
+    }
+
+    static void Main()
+    {
+        string wild = "g*ks", str = "geeks";
+        Console.WriteLine("Match: " + WildcardMatch(wild, str)); // Output: true
+    }
+}
+
+40. Function to find Number of customers who could not get a computer
+
+🔹 Problem: Customers enter (A to Z), if a computer is available, allocate it. If not and customer hasn't used one, mark as unserved. Free computer when customer leaves.
+
+🔹 Input: "ABCBCADEED"
+🔹 Output: 1
+
+🔹 Explanation:
+
+A, B, C, D served
+E came when no computer left → unserved
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static int CountUnserved(string seq, int computers)
+    {
+        HashSet<char> usingComp = new HashSet<char>();
+        HashSet<char> seen = new HashSet<char>();
+        int unserved = 0;
+
+        foreach (char c in seq)
+        {
+            if (usingComp.Contains(c))
+            {
+                usingComp.Remove(c); // Customer leaves
+            }
+            else if (!seen.Contains(c))
+            {
+                seen.Add(c);
+                if (usingComp.Count < computers)
+                    usingComp.Add(c);
+                else
+                    unserved++;
+            }
+        }
+        return unserved;
+    }
+
+    static void Main()
+    {
+        string input = "ABCBCADEED";
+        int computers = 3;
+        Console.WriteLine("Unserved: " + CountUnserved(input, computers)); // Output: 1
+    }
+}
+
+41. Transform One String to Another using Minimum Number of Given Operations
+🔹 Allowed Operation: Move any character to front.
+
+🔹 Input: A = "EACBD", B = "EABCD"
+🔹 Output: 3
+
+🔹 Explanation: D→B→C moved → 3 steps
+
+🔹 C# Code:
+using System;
+class Program
+{
+    static int Transform(string A, string B)
+    {
+        if (A.Length != B.Length) return -1;
+
+        int[] count = new int[256];
+        foreach (char c in A) count[c]++;
+        foreach (char c in B) count[c]--;
+
+        foreach (int val in count)
+            if (val != 0) return -1; // Not possible
+
+        int res = 0, i = A.Length - 1, j = B.Length - 1;
+
+        while (i >= 0)
+        {
+            if (A[i] == B[j])
+            {
+                j--;
+            }
+            else
+            {
+                res++; // Move A[i] to front later
+            }
+            i--;
+        }
+        return res;
+    }
+
+    static void Main()
+    {
+        string A = "EACBD", B = "EABCD";
+        Console.WriteLine("Steps: " + Transform(A, B)); // Output: 3
+    }
+}
+
+42. Check if two given strings are isomorphic to each other
+🔹 Definition: One-to-one mapping of characters, preserving order.
+
+🔹 Input: "egg", "add"
+🔹 Output: true
+
+🔹 Explanation: e → a, g → d
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static bool AreIsomorphic(string s1, string s2)
+    {
+        if (s1.Length != s2.Length) return false;
+
+        Dictionary<char, char> map1 = new Dictionary<char, char>();
+        Dictionary<char, char> map2 = new Dictionary<char, char>();
+
+        for (int i = 0; i < s1.Length; i++)
+        {
+            char a = s1[i], b = s2[i];
+
+            if (map1.ContainsKey(a))
+            {
+                if (map1[a] != b) return false;
+            }
+            else
+            {
+                if (map2.ContainsKey(b)) return false;
+                map1[a] = b;
+                map2[b] = a;
+            }
+        }
+        return true;
+    }
+
+    static void Main()
+    {
+        string a = "egg", b = "add";
+        Console.WriteLine("Isomorphic: " + AreIsomorphic(a, b)); // Output: true
+    }
+}
+
+43. Recursively print all sentences that can be formed from list of word lists
+
+🔹 Input:
+[
+  ["I", "You"],
+  ["like", "love"],
+  ["apples", "bananas"]
+]
+
+🔹 Output:
+I like apples  
+I like bananas  
+I love apples  
+I love bananas  
+You like apples  
+You like bananas  
+You love apples  
+You love bananas  
+
+🔹 Explanation: Use recursion or backtracking to generate one word per row.
+
+🔹 C# Code:
+
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void PrintSentences(List<List<string>> lists, int row, string sentence)
+    {
+        if (row == lists.Count)
+        {
+            Console.WriteLine(sentence.Trim());
+            return;
+        }
+
+        foreach (string word in lists[row])
+        {
+            PrintSentences(lists, row + 1, sentence + word + " ");
+        }
+    }
+
+    static void Main()
+    {
+        var lists = new List<List<string>>
+        {
+            new List<string> { "I", "You" },
+            new List<string> { "like", "love" },
+            new List<string> { "apples", "bananas" }
+        };
+
+        PrintSentences(lists, 0, "");
+    }
+}
