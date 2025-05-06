@@ -1,0 +1,500 @@
+Top 50 OOPs Interview Questions & Answers
+
+Here are OOPs interview questions and answers for fresher as well experienced candidates to get their dream job.
+
+1) What is OOPS?
+OOPS stands for Object-Oriented Programming System. It is a programming paradigm based on the concept of "objects", which are instances of classes. 
+Programs are structured as a collection of interacting objects, each containing data (fields) and behavior (methods). OOPS promotes modularity, code reusability, and scalability.
+
+2) What are the basic concepts of OOPS?
+The four core principles of Object-Oriented Programming are:
+Abstraction – Hiding internal implementation details and showing only essential features.
+Encapsulation – Wrapping data and behavior into a single unit (class) and restricting access to internal details.
+Inheritance – Acquiring the properties and behaviors of a parent class in a derived class.
+Polymorphism – The ability of an object to take many forms, allowing methods to behave differently based on the object that calls them.
+
+3) What is a Class?
+A class is a blueprint or template for creating objects. It defines the properties (fields/variables) and behaviors (methods/functions) 
+that the objects created from the class will have. It serves as a logical entity that defines how an object should function.
+
+4) What is an Object?
+An object is an instance of a class. It represents a real-world entity and holds actual values for the attributes defined in the class. 
+Each object has a unique identity, state (data), and behavior (methods).
+
+5) What is Encapsulation?
+Encapsulation is the concept of bundling data and methods that operate on that data within a single unit, typically a class. 
+It restricts direct access to some of the object's components, which helps in protecting the integrity of the data. 
+Access to the data is controlled via access modifiers such as:
+public
+private
+protected
+internal
+protected internal
+
+6) What is Polymorphism?
+Polymorphism means "many forms" and allows methods to do different things based on the object that is invoking them. 
+It comes in two types:
+Compile-time Polymorphism (Method Overloading): Same method name with different parameter lists within the same class.
+Run-time Polymorphism (Method Overriding): Subclass provides a specific implementation of a method already defined in the parent class.
+
+7) What is Inheritance?
+Inheritance is a mechanism by which one class (child/derived class) inherits the properties and methods of another class (parent/base class).
+
+Single Inheritance: Inheriting from one base class.
+Multiple Inheritance (not supported directly in C# or Java through classes): Achieved using interfaces.
+It promotes code reuse and establishes a natural hierarchy between classes.
+
+8) What are Manipulators?
+Manipulators are functions in C++ that are used along with input/output streams (cin, cout) to modify the behavior of streams. 
+They help format the output.
+
+Common manipulators include:
+endl – Inserts a newline character and flushes the output buffer.
+setw(n) – Sets the width of the next input/output field.
+
+9) What is a Constructor?
+A constructor is a special method that gets invoked automatically when an object of a class is created. It initializes the new object.
+Key points about constructors:
+The constructor name must match the class name.
+It has no return type, not even void.
+It can be overloaded to initialize objects in different ways.
+In C#, constructors can be default, parameterized, static, or copy constructors (via cloning).
+
+10) What is a Destructor?
+A destructor is a special method used to clean up resources when an object is no longer needed or goes out of scope. 
+It is automatically called by the runtime or garbage collector.
+
+In C++, a destructor:
+Has the same name as the class, prefixed with a tilde (~).
+Cannot be overloaded or take parameters.
+In C#, destructors are defined using a tilde and are mostly used to release unmanaged resources since .NET has a garbage collector.
+
+
+11) What is an Inline Function?
+An inline function is a function where the compiler attempts to expand the function code at the point of each function call,
+rather than managing a traditional call stack. This helps to reduce overhead from function calls, especially in small, frequently-used functions.
+
+Declared using the inline keyword in C++.
+Inline expansion is a suggestion to the compiler, not a command.
+Not suitable for functions with complex logic, recursion, or loops.
+
+12) What is a Virtual Function?
+A virtual function is a member function in a base class that you can override in a derived class. 
+It enables run-time polymorphism, allowing function calls to be resolved dynamically based on the actual object type.
+Declared using the virtual keyword in C++.
+Requires the use of a base class pointer or reference to invoke overridden behavior.
+In languages like C# and Java, the keywords virtual/override or @Override serve the same purpose.
+
+13) What is a Friend Function?
+A friend function is a non-member function that is given special access to the private and protected members of a class.
+Declared with the friend keyword inside a class.
+Useful when two or more classes need to access each other's private data.
+It breaks the concept of encapsulation slightly, so should be used judiciously.
+Example:
+class MyClass {
+   friend void display(MyClass obj);  // friend function declaration
+private:
+   int data;
+};
+
+14) What is Function Overloading?
+Function overloading refers to defining multiple functions with the same name but different signatures (number or type of parameters). It provides compile-time polymorphism and improves code readability.
+Example:
+void add(int a, int b);
+void add(double a, double b);
+void add(string a, string b);
+Overloaded functions must differ in type or number of parameters.
+Return type alone is not sufficient for overloading.
+
+15) What is Operator Overloading?
+Operator overloading allows developers to redefine the way operators work for user-defined types (like objects of classes). This enables intuitive operations like +, -, ==, etc., on objects.
+
+Supported in C++, partially in Python, but not supported in C# or Java directly (except for a few built-in overloads).
+Example in C++:
+class Complex {
+   public:
+   Complex operator + (const Complex& obj);
+};
+Be cautious to maintain expected operator behavior to avoid confusion.
+
+16) What is an Abstract Class?
+An abstract class is a class that cannot be instantiated directly and is used as a base class for other classes.
+It may contain abstract methods (methods without implementation) as well as concrete methods.
+In C#, declared using the abstract keyword.
+It defines a common interface for its derived classes.
+
+Example:
+abstract class Shape {
+   public abstract void Draw();  // abstract method
+   public void Move() { /*...*/ }  // concrete method
+}
+
+17) What is a Ternary Operator?
+The ternary operator is a concise conditional operator that evaluates a condition and returns one of two values.
+
+Syntax: condition ? value_if_true : value_if_false;
+
+Used for inline conditions and can improve code brevity.
+Example:
+int max = (a > b) ? a : b;
+It replaces simple if-else constructs in a single expression.
+
+18) What is the use of the finalize method?
+In languages like C#, the Finalize() method is used to perform cleanup operations before the object is reclaimed by the garbage collector.
+
+It’s similar to a destructor in C++.
+
+Declared using a tilde ~ClassName() syntax in C#.
+Not guaranteed to run at a specific time; use IDisposable and Dispose() for deterministic cleanup of unmanaged resources.
+Example:
+~MyClass() {
+   // cleanup code
+}
+
+19) What are the Different Types of Arguments?
+When calling a function, arguments are the actual values passed. The ways arguments are passed include:
+
+Call by Value – A copy of the value is passed. Changes inside the function do not affect the original variable.
+Call by Reference – A reference (or address) to the original variable is passed. Changes inside the function affect the original variable.
+
+Example in C#:
+
+void Update(int x) {
+    x = x + 10;
+}
+int a = 5;
+Update(a);  // a remains 5
+
+
+20) What is the super Keyword?
+The super keyword is used in object-oriented languages (like Java and C#) to refer to the immediate parent class of the current object.
+
+Used to call a superclass’s method or constructor from a subclass.
+Helps to override and reuse base class functionality.
+
+Examples:
+super.display();  // calls parent method
+super(param1, param2);  // calls parent constructor
+In C#, the equivalent is base instead of super.
+
+
+
+21) What is Method Overriding?
+Method overriding is a feature in object-oriented programming that allows a subclass (derived class) to provide a specific implementation of a method that is already defined in its superclass (base class).
+The method in the subclass must have the same name, return type, and parameters as the one in the base class.
+It enables runtime polymorphism.
+
+In languages like C# and Java, method overriding requires the base method to be declared with keywords like virtual or abstract (C#) or just inherited (Java), and the derived method to be marked with override.
+
+Example in C#:
+
+class Base {
+    public virtual void Show() {
+        Console.WriteLine("Base class method");
+    }
+}
+
+class Derived : Base {
+    public override void Show() {
+        Console.WriteLine("Derived class method");
+    }
+}
+
+22) What is an Interface?
+An interface is a contract that defines a set of abstract methods and properties that a class must implement.
+It contains no implementation, only declarations.
+A class can implement multiple interfaces, supporting multiple inheritance.
+
+In C#, interfaces use the interface keyword, and methods are implicitly public and abstract.
+
+Example in C#:
+interface IDrive {
+    void StartEngine();
+}
+
+class Car : IDrive {
+    public void StartEngine() {
+        Console.WriteLine("Engine started.");
+    }
+}
+
+
+23) What is Exception Handling?
+Exception handling is a mechanism to handle runtime errors gracefully without crashing the application.
+
+It allows developers to manage unexpected events using constructs like try, catch, finally, and throw.
+Exceptions can include I/O errors, null references, division by zero, etc.
+
+Example in C#:
+
+try {
+    int result = 10 / 0;
+} catch (DivideByZeroException ex) {
+    Console.WriteLine("Cannot divide by zero.");
+} finally {
+    Console.WriteLine("Cleanup done.");
+}
+
+
+24) What are Tokens?
+Tokens are the smallest elements of a program that are meaningful to the compiler.
+Common types of tokens include:
+
+Keywords (e.g., if, class, return)
+Identifiers (e.g., variable and function names)
+Constants (e.g., 5, 3.14)
+Operators (e.g., +, ==)
+Special symbols like ,, {, }, (, ).
+
+25) What is the Main Difference Between Overloading and Overriding?
+
+Feature	            Overloading	                        Overriding
+Binding	            Compile-time (static)	              Runtime (dynamic)
+Method Name	        Same	                              Same
+Parameters	        Must differ (type/number/order)	    Must be same
+Class Type	        Within the same class	              Across base and derived classes
+Inheritance	        Not required	                      Required
+
+26) What is the Main Difference Between a Class and an Object?
+
+A class is a blueprint or template used to create objects. It defines structure and behavior (i.e., properties and methods).
+An object is an instance of a class. It holds actual values/state and can execute methods.
+
+Example:
+class Car {
+    public string color;
+}
+Car myCar = new Car(); // 'myCar' is an object of class 'Car'
+
+27) What is Abstraction?
+Abstraction is the process of hiding complex implementation details and showing only the essential features to the user.
+It helps in reducing complexity and increasing reusability.
+It is implemented using abstract classes and interfaces.
+
+Real-world example:
+When using a TV remote, you press buttons (abstract interface) without knowing the internal circuitry (implementation).
+
+28) What are Access Modifiers?
+Access modifiers define the visibility and accessibility of classes, methods, and variables.
+
+In C#, the main access modifiers are:
+Private – Accessible only within the class
+Protected – Accessible within the class and its derived classes
+Public – Accessible from any class
+Internal – Accessible within the same assembly
+Protected Internal – Accessible from the same assembly or from derived classes
+
+29) What are Sealed Modifiers?
+The sealed keyword prevents other classes from inheriting from a class or overriding a method.
+When applied to a class, it cannot be inherited.
+When applied to a method, it prevents further overriding in derived classes.
+
+Example in C#:
+sealed class FinalClass { }  // Cannot be inherited
+
+class Base {
+    public virtual void Display() { }
+}
+
+class Derived : Base {
+    public sealed override void Display() { } // Cannot be overridden again
+}
+
+
+30) How Can We Call the Base Method Without Creating an Instance?
+You can call a base class method without creating an instance only if the method is static.
+Static methods belong to the class, not to an object.
+You can also call base class methods from derived classes using the base keyword.
+
+Example in C#:
+
+class Base {
+    public static void Show() {
+        Console.WriteLine("Static method from Base");
+    }
+}
+
+class Derived : Base {
+    public void CallBase() {
+        base.Show(); // or Base.Show();
+    }
+}
+
+
+31) What is the Difference Between new and override?
+
+In C#, both new and override are used to define method behavior in derived classes, but they have different purposes:
+The **override** keyword is used when a base class method is marked as virtual, and you want to provide a new implementation in the derived class. It supports runtime polymorphism.
+The **new** keyword is used when you want to hide a base class method that is not marked as virtual. It tells the compiler to use the derived class's version instead, but does not override it.
+
+Example:
+class Base {
+    public virtual void Display() => Console.WriteLine("Base Display");
+    public void Show() => Console.WriteLine("Base Show");
+}
+
+class Derived : Base {
+    public override void Display() => Console.WriteLine("Derived Display"); // override
+    public new void Show() => Console.WriteLine("Derived Show"); // hides base method
+}
+
+32) What Are the Various Types of Constructors?
+Constructors are special methods invoked when an object is created. 
+Types include:
+Default Constructor:             Takes no parameters. Automatically created if no other constructor is defined.
+Parameterized Constructor:       Accepts arguments to initialize the object with specific values.
+Copy Constructor (C++ specific): Creates a new object by copying values from another existing object. In C#, similar functionality can be manually implemented.
+Static Constructor (C# only): Initializes static members of the class. It is called automatically before the first use and has no parameters.
+
+33) What is Early and Late Binding?
+
+Early Binding (Static Binding): The method call is resolved at compile-time. Common with overloaded methods and non-virtual methods.
+Late Binding (Dynamic Binding): The method call is resolved at runtime. It typically happens with virtual methods, interfaces, or reflection.
+
+Example:
+
+// Early Binding
+object obj = new MyClass(); 
+obj.MyMethod(); // resolved at compile time
+
+// Late Binding using dynamic
+dynamic dynObj = new MyClass();
+dynObj.MyMethod(); // resolved at runtime
+
+
+34) What is the this Pointer?
+The this keyword refers to the current instance of the class. It is commonly used to:
+Differentiate between class members and parameters with the same name.
+Pass the current instance to other methods or constructors.
+Return the current object from methods.
+
+Example:
+class Car {
+    string color;
+    public Car(string color) {
+        this.color = color; // differentiate between parameter and member
+    }
+}
+
+35) What is the Difference Between a Structure and a Class?
+
+Feature	                Structure (struct)	      Class
+
+Type	                Value type                      	Reference type
+Inheritance	          Does not support inheritance	    Supports inheritance
+Default Access	      Public for members	              Private for members
+Use Case	            Lightweight data containers	      Complex behavior and logic
+Memory Allocation	    Stack	                            Heap
+Abstract/Virtual    	Not supported	                    Supported
+
+36) What is the Default Access Modifier in a Class?
+
+In C#, the default access modifier for a class (when no modifier is specified) is **internal**, meaning it's accessible within the same assembly.
+For class members (fields, methods), the default is **private**.
+
+37) What is a Pure Virtual Function?
+A pure virtual function is a function without implementation in the base class and must be overridden in derived classes.
+It is used to define abstract classes in C++.
+
+Syntax in C++:
+class Shape {
+    public:
+    virtual void draw() = 0; // pure virtual
+};
+A class with one or more pure virtual functions becomes an abstract class.
+In C#, similar behavior is achieved using abstract methods in abstract classes.
+
+38) What Are All the Operators That Cannot Be Overloaded?
+In C++, the following operators cannot be overloaded:
+:: (Scope Resolution Operator)
+. (Member Access Operator)
+.* (Pointer-to-member Operator)
+?: (Ternary Conditional Operator, in some languages)
+sizeof and typeid (in C++)
+new and delete can be overloaded for allocation, but not the syntax itself
+
+39) What is Dynamic or Runtime Polymorphism?
+Dynamic polymorphism is the ability to invoke the correct version of an overridden method at runtime based on the object type, not the reference type.
+Achieved using virtual and override keywords in C# or virtual functions in C++.
+It supports method overriding and enables flexible and extensible code.
+
+Example in C#:
+class Animal {
+    public virtual void Speak() => Console.WriteLine("Animal speaks");
+}
+
+class Dog : Animal {
+    public override void Speak() => Console.WriteLine("Dog barks");
+}
+
+40) Do We Require Parameters for Constructors?
+No, parameters are not required for constructors.
+
+A default constructor has no parameters and is automatically invoked if no other constructors are defined.
+However, parameterized constructors allow initializing an object with specific data during creation.
+If you define a parameterized constructor and still want a no-arg constructor, you must define it explicitly.
+
+Example in C#:
+
+class Person {
+    public Person() {
+        // Default constructor
+    }
+
+    public Person(string name) {
+        // Parameterized constructor
+    }
+}
+
+
+41) What is a copy constructor?
+A copy constructor is a special type of constructor in object-oriented programming that creates a new object as a copy of an existing object. 
+It is typically used to initialize a new object with the values of an existing object of the same class. 
+There are two types of copy constructors: one provided by the system (default copy constructor) and one that can be defined by the user. 
+The user-defined copy constructor is used to perform deep copies, which involve creating copies of dynamically allocated memory, rather than simply copying references to the original memory.
+
+42) What does the keyword 'virtual' represent in the method definition?
+The virtual keyword in a method definition indicates that the method can be overridden by derived classes. 
+This is part of the mechanism for polymorphism, where a method in a base class is defined as virtual, allowing derived classes to provide their own implementation of that method. 
+The method's behavior can then be dynamically determined at runtime, depending on the object type.
+
+43) Can a static method use non-static members?
+No, a static method cannot directly access non-static members. Static methods belong to the class itself rather than to instances of the class, so they can only access static members, which are shared across all instances of the class.
+Non-static members, however, are specific to an instance of the class, and static methods do not have a reference to any particular instance.
+
+44) What are a base class, subclass, and superclass?
+A base class (or parent class) is a class that provides common functionality or data for other classes to inherit. 
+It is often more generalized and serves as the foundation for derived classes.
+A subclass is a class that inherits from another class (the base class), and can add or modify functionality. A subclass is more specialized than the base class.
+A superclass is the class from which a subclass inherits. It is the parent class in the inheritance hierarchy. The superclass contains the common behaviors or properties that the subclass can inherit or override.
+
+45) What is static and dynamic binding?
+
+Static Binding (Early Binding): Static binding occurs when the method call is resolved at compile time. This is the default behavior for method calls in most cases, such as calling methods on regular methods in non-overridden classes or accessing variables directly. It is faster because the compiler knows exactly which method to call.
+Dynamic Binding (Late Binding): Dynamic binding occurs when the method call is resolved at runtime. This happens when methods are overridden in derived classes, and the exact method to be called is determined based on the object’s runtime type. This enables polymorphism, where the behavior of the program can vary depending on the actual object type.
+
+46) How many instances can be created for an abstract class?
+You cannot create instances of an abstract class directly. 
+An abstract class is designed to serve as a blueprint for other classes and can contain abstract methods (methods without implementation) that must be implemented by its subclasses.
+To use the functionality of an abstract class, you must create an instance of a derived class that implements the abstract methods.
+
+47) Which keyword can be used for overloading?
+The operator keyword is used for operator overloading in C++ (and some other languages). 
+It allows you to define custom behaviors for operators like +, -, *, etc., for user-defined data types (such as classes). 
+This lets you manipulate the operators in ways that make sense for your custom objects, providing more intuitive syntax for complex operations.
+
+48) What is the default access specifier in a class definition?
+In many object-oriented languages like C++, the default access specifier for members of a class is private. 
+This means that, unless otherwise specified, the data members and methods of a class are not accessible outside of the class. 
+To provide access to these members, you would need to explicitly specify an access modifier, such as public or protected.
+
+49) Which OOPS concept is used as a reuse mechanism?
+The OOPS concept used as a reuse mechanism is inheritance.
+Inheritance allows you to create new classes by reusing the functionality of existing classes.
+A subclass inherits the properties and behaviors (methods) of its parent class, enabling code reuse without having to rewrite common functionality. This allows for a hierarchical relationship between classes, where specialized behavior can be added to base functionality.
+
+50) Which OOPS concept exposes only the necessary information to the calling functions?
+The OOPS concept that exposes only the necessary information to the calling functions is Encapsulation.
+Encapsulation involves bundling the data (attributes) and methods that operate on the data into a single unit, called a class. 
+It also restricts access to certain components of the object by using access modifiers (e.g., private, protected, public).
+This ensures that internal implementation details are hidden from the outside world, allowing interaction only through well-defined interfaces (public methods), thus protecting the integrity of the data.
